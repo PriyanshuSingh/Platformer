@@ -34,10 +34,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${COCOS2D_ROOT}/cmake/Modules/")
 include(CocosBuildHelpers)
 
 # libcocos2d
+option(BUILD_EDITOR_COCOSTUDIO "Build editor support for cocostudio" ON)
 set(BUILD_CPP_TESTS OFF CACHE BOOL "turn off build cpp-tests")
 set(BUILD_LUA_LIBS OFF CACHE BOOL "turn off build lua related targets")
 set(BUILD_JS_LIBS OFF CACHE BOOL "turn off build js related targets")
 add_subdirectory(${COCOS2D_ROOT})
+add_subdirectory(${COCOS2D_ROOT}/external/Box2D)
 
 # Some macro definitions
 if(WINDOWS)
@@ -113,6 +115,8 @@ include_directories(
   ${COCOS2D_ROOT}/cocos
   ${COCOS2D_ROOT}/cocos/platform
   ${COCOS2D_ROOT}/cocos/audio/include/
+  ${COCOS2D_ROOT}/external
+  ${COCOS2D_ROOT}/cocos/editor-support
   Classes
 )
 if ( WIN32 )
@@ -124,13 +128,38 @@ endif( WIN32 )
 
 set(GAME_SRC
   Classes/AppDelegate.cpp
-  Classes/HelloWorldScene.cpp
+  #rubestuff
+  Classes/rubeStuff/b2dJson.cpp
+  Classes/rubeStuff/b2dJsonImage.cpp
+  Classes/rubeStuff/jsoncpp.cpp
+
+  #helper
+  Classes/helper/GLES-Render.cpp
+
+  #core
+  Classes/Core/PlayScreen/PlatformerGlobals.cpp
+  Classes/Core/PlayScreen/GameUiLayer.cpp
+  Classes/Core/PlayScreen/MainCamera.cpp
+  Classes/Core/PlayScreen/b2PhysicsSystem.cpp
+  Classes/Core/PlayScreen/PlayScreen.cpp
+
+
+  #player
+  Classes/Core/PlayScreen/Player/Player.cpp
+  Classes/Core/PlayScreen/Player/PlayerCommand.cpp
+  Classes/Core/PlayScreen/Player/PlayerController.cpp
+
+  #core modules
+  Classes/Core/PlayScreen/ModuleSystem/ModuleContainer.cpp
+  Classes/Core/PlayScreen/ModuleSystem/PlayModule.cpp
+  Classes/Core/PlayScreen/ModuleSystem/ModuleEntries.cpp
+
+
   ${PLATFORM_SPECIFIC_SRC}
 )
 
 set(GAME_HEADERS
   Classes/AppDelegate.h
-  Classes/HelloWorldScene.h
   ${PLATFORM_SPECIFIC_HEADERS}
 )
 
@@ -148,7 +177,7 @@ else()
   endif ( WIN32 )
 endif()
 
-target_link_libraries(${APP_NAME} cocos2d)
+target_link_libraries(${APP_NAME} cocos2d box2d)
 
 set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
 

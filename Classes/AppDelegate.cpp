@@ -1,9 +1,9 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "Core/PlayScreen/PlayScreen.hpp"
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+static cocos2d::Size designResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
@@ -14,6 +14,9 @@ AppDelegate::AppDelegate() {
 
 AppDelegate::~AppDelegate() 
 {
+
+
+
 }
 
 //if you want a different context,just modify the value of glContextAttrs
@@ -51,7 +54,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
+    director->setAnimationInterval(1.0 / 60.0f);
 
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
@@ -75,7 +78,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    auto scene = PlayScreen::create();
 
     // run
     director->runWithScene(scene);
