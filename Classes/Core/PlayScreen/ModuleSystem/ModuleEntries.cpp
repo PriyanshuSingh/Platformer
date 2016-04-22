@@ -14,7 +14,7 @@ void ModuleEntries::initVector() {
     initDone = true;
 
     typedef PlayModule::ModuleInfo inf;
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),PlayModule::create));
     entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
 
 

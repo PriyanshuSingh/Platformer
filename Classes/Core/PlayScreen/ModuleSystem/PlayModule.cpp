@@ -14,28 +14,6 @@
 USING_NS_CC;
 
 
-PlayModule *PlayModule::create(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) {
-
-
-
-
-
-    auto module = new (std::nothrow) PlayModule();
-    if (module && module->init(info,system,cam,offset))
-    {
-        module->autorelease();
-        return module;
-    }
-    CC_SAFE_DELETE(module);
-    return nullptr;
-
-
-
-
-
-
-
-}
 
 
 bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) {

@@ -7,6 +7,7 @@
 
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
+#include "PlatformerGlobals.hpp"
 
 class B2PhysicsSystem;
 class b2Body;
@@ -19,27 +20,7 @@ public:
         Void
 
     };
-
-
-    virtual void addChild(cocos2d::Node *child) override {
-        cocos2d::Node::addChild(child);
-        child->setCameraMask(getCameraMask());
-    }
-
-    virtual void addChild(cocos2d::Node *child, int localZOrder) override {
-        cocos2d::Node::addChild(child, localZOrder);
-        child->setCameraMask(getCameraMask());
-    }
-
-    virtual void addChild(cocos2d::Node *child, int localZOrder, int tag) override {
-        cocos2d::Node::addChild(child, localZOrder, tag);
-        child->setCameraMask(getCameraMask());
-    }
-
-    virtual void addChild(cocos2d::Node *child, int localZOrder, const std::string &name) override {
-        cocos2d::Node::addChild(child, localZOrder, name);
-        child->setCameraMask(getCameraMask());
-    }
+    ADD_CHILD_MASK(cocos2d::Node);
 
     virtual bool init(B2PhysicsSystem * system,PlayModule * parent,const b2Vec2 & offset);
     virtual ~PhysicsActor(){}

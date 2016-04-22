@@ -7,7 +7,25 @@
 
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
+#include "../PlatformerGlobals.hpp"
 
+//helper macros
+#define CREATE_MODULE(__TYPE__) \
+static PlayModule* create(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) \
+{ \
+    PlayModule *pRet = new(std::nothrow) __TYPE__(); \
+    if (pRet && pRet->init(info,system,cam,offset)) \
+    { \
+        pRet->autorelease(); \
+        return pRet; \
+    } \
+    else \
+    { \
+        delete pRet; \
+        pRet = nullptr; \
+        return nullptr; \
+    } \
+}
 
 class B2PhysicsSystem;
 class b2Body;
@@ -17,14 +35,16 @@ class MainCamera;
 
 class PlayModule:public cocos2d::Layer,public b2ContactListener,public b2DestructionListener{
 public:
-
     struct ModuleInfo{
         ModuleInfo(const std::string & rubeInfo):rubeInfo(rubeInfo){}
         std::string rubeInfo;
     };
 
+    CREATE_MODULE(PlayModule);
+    ADD_CHILD_MASK(cocos2d::Layer);
 
-    static PlayModule * create(const ModuleInfo & info, B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
+
+
     virtual bool init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
     //TODO delete all the acquired bodies and joints here
     virtual ~PlayModule();
@@ -128,6 +148,11 @@ protected:
 
     b2Vec2 boxInitOffset;
 };
+
+
+
+
+
 
 
 #endif //MYGAME_PLAYMODULE_HPP

@@ -9,7 +9,7 @@
 #include "../../PhysicsActor.hpp"
 class TestModule:public PlayModule {
 public:
-    static PlayModule * create(const ModuleInfo & info, B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
+    CREATE_MODULE(TestModule);
 
 
 private:

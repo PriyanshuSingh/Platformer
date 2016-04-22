@@ -4,12 +4,9 @@
 
 #include "ModuleContainer.hpp"
 #include "ModuleEntries.hpp"
-#include "PlayModule.hpp"
 #include "../b2PhysicsSystem.hpp"
-
 #include "../MainCamera.hpp"
 #include "../Player/Player.hpp"
-
 #include "../../PlayScreen/Player/PlayerController.hpp"
 
 USING_NS_CC;
@@ -235,8 +232,6 @@ void ModuleContainer::loadCurrentModule() {
 
     this->addChild(current,DRAWORDER::MIDDLEGROUND);
 
-    current->setCameraMask(current->getParent()->getCameraMask(),true);
-
 
 
 
@@ -260,8 +255,6 @@ void ModuleContainer::loadNextModule() {
     next = ModuleEntries::getNextModule(currentLevel+1,system,cam,system->screenToBox2D(offset));
     next->setPosition(offset);
     this->addChild(next,DRAWORDER::MIDDLEGROUND);
-    next->setCameraMask(next->getParent()->getCameraMask(),true);
-
 
 
 

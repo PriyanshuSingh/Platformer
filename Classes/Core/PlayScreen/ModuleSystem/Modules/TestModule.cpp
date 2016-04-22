@@ -8,24 +8,7 @@
 
 
 USING_NS_CC;
-PlayModule *TestModule::create(const PlayModule::ModuleInfo &info, B2PhysicsSystem *system, MainCamera *cam,
-                               const b2Vec2 &offset) {
 
-
-
-
-    auto module = new (std::nothrow) TestModule();
-    if (module && module->init(info,system,cam,offset))
-    {
-        module->autorelease();
-        return module;
-    }
-    CC_SAFE_DELETE(module);
-    return nullptr;
-
-
-
-}
 
 
 bool TestModule::init(const PlayModule::ModuleInfo &info, B2PhysicsSystem *system, MainCamera *cam,

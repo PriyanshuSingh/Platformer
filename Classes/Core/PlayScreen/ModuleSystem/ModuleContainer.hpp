@@ -17,6 +17,7 @@ class TestAiController;
 
 class ModuleContainer :public cocos2d::Node {
 public:
+    ADD_CHILD_MASK(cocos2d::Node);
     static ModuleContainer * create(B2PhysicsSystem * system,MainCamera * cam);
     bool init(B2PhysicsSystem * system,MainCamera * cam);
     ~ModuleContainer();
