@@ -102,12 +102,12 @@ void InputController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event)
     }
     else if(keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW){
         mover->setDirection(true);
-        moving = true;
+        movingRight = true;
 
     }
     else if(keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW){
         mover->setDirection(false);
-        moving = true;
+        movingLeft = true;
 
     }
     else if(keyCode == EventKeyboard::KeyCode::KEY_D){
@@ -129,12 +129,16 @@ void InputController::onKeyPressed(EventKeyboard::KeyCode keyCode, Event *event)
 void InputController::onKeyReleased(EventKeyboard::KeyCode keyCode, Event *event) {
 
 
-    if(keyCode == EventKeyboard::KeyCode::KEY_SPACE){
+    typedef EventKeyboard::KeyCode Codes;
+    if(keyCode == Codes::KEY_SPACE){
         jumping = false;
 
     }
-    else if(keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW||keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW ){
-        moving = false;
+    else if(keyCode == Codes::KEY_RIGHT_ARROW){
+        movingRight = false;
+    }
+    else if(keyCode == Codes::KEY_LEFT_ARROW){
+        movingLeft = false;
     }
     else if(keyCode == EventKeyboard::KeyCode::KEY_D){
         killing = false;
@@ -172,7 +176,7 @@ void InputController::prePhysicsUpdate(float delta) {
         return;
     }
 
-    if(moving){
+    if(movingLeft || movingRight){
         current = mover;
         return;
     }

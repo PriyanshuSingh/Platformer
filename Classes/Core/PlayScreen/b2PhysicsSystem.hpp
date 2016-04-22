@@ -26,6 +26,14 @@ public:
 
 
 
+    void addOffset(b2Body * body,const b2Vec2 & offset);
+    void addOffset(b2Joint * joint,const b2Vec2 & offset);
+
+
+
+
+    float32 getPtmRatio(){return ptmRatio;}
+
     //utility methods
     float32 screenToBox2D(float32 in);
     float32 box2DToScreen(float32 in);
@@ -59,6 +67,9 @@ public:
     void resume();
 
 
+
+    //for slow motion effects and stuff
+    void setSimulationSpeed(float scaleFactor);
 
 
 
@@ -108,6 +119,7 @@ private:
     bool interpolate;
     float32 ptmRatio;
     bool paused;
+    float scaleFactor = 1.0f;
 
     Settings worldSettings;
 

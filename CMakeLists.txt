@@ -142,7 +142,7 @@ set(GAME_SRC
   Classes/Core/PlayScreen/MainCamera.cpp
   Classes/Core/PlayScreen/b2PhysicsSystem.cpp
   Classes/Core/PlayScreen/PlayScreen.cpp
-
+  Classes/Core/PlayScreen/PhysicsActor.cpp
 
   #player
   Classes/Core/PlayScreen/Player/Player.cpp
@@ -150,16 +150,49 @@ set(GAME_SRC
   Classes/Core/PlayScreen/Player/PlayerController.cpp
 
   #core modules
+
   Classes/Core/PlayScreen/ModuleSystem/ModuleContainer.cpp
   Classes/Core/PlayScreen/ModuleSystem/PlayModule.cpp
   Classes/Core/PlayScreen/ModuleSystem/ModuleEntries.cpp
 
+  #modules
+  Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule.cpp
 
   ${PLATFORM_SPECIFIC_SRC}
 )
 
 set(GAME_HEADERS
-  Classes/AppDelegate.h
+        Classes/AppDelegate.h
+        #rubestuff
+        Classes/rubeStuff/b2dJson.h
+        Classes/rubeStuff/b2dJsonImage.h
+
+        #helper
+        Classes/helper/GLES-Render.h
+
+        #core
+        Classes/Core/PlayScreen/PlatformerGlobals.hpp
+        Classes/Core/PlayScreen/GameUiLayer.hpp
+        Classes/Core/PlayScreen/MainCamera.hpp
+        Classes/Core/PlayScreen/b2PhysicsSystem.hpp
+        Classes/Core/PlayScreen/PlayScreen.hpp
+        Classes/Core/PlayScreen/PhysicsActor.hpp
+
+        #player
+        Classes/Core/PlayScreen/Player/Player.hpp
+        Classes/Core/PlayScreen/Player/PlayerCommand.hpp
+        Classes/Core/PlayScreen/Player/PlayerController.hpp
+
+        #core modules
+
+        Classes/Core/PlayScreen/ModuleSystem/ModuleContainer.hpp
+        Classes/Core/PlayScreen/ModuleSystem/PlayModule.hpp
+        Classes/Core/PlayScreen/ModuleSystem/ModuleEntries.hpp
+
+
+
+        #modules
+        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule.hpp
   ${PLATFORM_SPECIFIC_HEADERS}
 )
 

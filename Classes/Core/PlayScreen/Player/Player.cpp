@@ -108,6 +108,7 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system) {
 
 
 
+    prevPosition = mainBody->GetPosition();
 
 
 
@@ -149,13 +150,22 @@ void Player::postPhysicsUpdate(float delta) {
 
 
     if(dead){
+
         playerDeltaMovement = Vec2(0,0);
         return;
     }
 
 
     //TODO discuss to put this in pre or post
+
+
+
+    //TODO this approach wont work with slow motion effects
+    //The Displacement approach gets fucked up when the world origin
+    //shifts.What To DO?Decision Pending..
     playerDeltaMovement = system->box2DToScreen(delta*mainBody->GetLinearVelocity());
+    prevPosition=mainBody->GetPosition();
+
 
     //setup player state vars
 
@@ -283,8 +293,3 @@ void Player::killMe() {
 
 
 }
-
-
-
-
-

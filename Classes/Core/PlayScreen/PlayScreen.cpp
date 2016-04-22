@@ -30,9 +30,11 @@ bool PlayScreen::init() {
         //1024/16 = 64
         float ptmRatio = 64;
         physicsSystem = new B2PhysicsSystem(ptmRatio, b2Vec2(0,-9.8f), false);
+#ifdef DEBUGGING_APP
         debugDraw = new GLESDebugDraw(ptmRatio);
         debugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_centerOfMassBit );
         physicsSystem->getWorld()->SetDebugDraw(debugDraw);
+#endif
     }
 
 
@@ -108,6 +110,15 @@ bool PlayScreen::init() {
 
         debugDrawerCocos = DrawNode::create();
         this->addChild(debugDrawerCocos);
+
+
+
+
+//        auto rotator = RotateBy::create(5,360);
+//        cam->runAction(rotator);
+
+
+
     }
 #endif
 
@@ -136,6 +147,7 @@ bool PlayScreen::init() {
 
 //game main update loop
 void PlayScreen::update(float delta){
+
 
 
 

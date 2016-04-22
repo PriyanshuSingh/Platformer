@@ -58,6 +58,12 @@ void MainCamera::setZoomBackToDefault(float detla) {
 }
 
 
+cocos2d::Vec2 MainCamera::getDownVector() {
+    Vec2 ans(-1*Vec2::UNIT_Y);
+    ans.rotate(Vec2::ZERO,-CC_DEGREES_TO_RADIANS(getRotation()));
+    return ans;
+}
+
 
 void MainCamera::move2D(float delta,const cocos2d::Vec2 &displacement) {
 

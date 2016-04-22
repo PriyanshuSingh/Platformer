@@ -49,6 +49,11 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
         this->cam = cam;
         this->system = system;
 
+        boxInitOffset = offset;
+        box2dToModuleMatrix.translate(Vec2to3(-1*system->box2DToScreen(boxInitOffset)));
+        float32 ratio = system->getPtmRatio();
+        box2dToModuleMatrix.scale(Vec3(ratio,ratio,0));
+
     }
     // Find out the absolute path for the file
     std::string path = FileUtils::getInstance()->fullPathForFilename(info.rubeInfo.c_str());
@@ -94,14 +99,12 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
 
 
 
-    //makes bodies at offset position
+
+    //TODO remove any body from directly being added to a module(use PhysicsActors)
+
+    //add bodies here only for debugging when they don't need any visual representation
+    //shift bodies ahead(In Rube they were made relative to world Origin).
     addOffsetBodiesAndJoints(offset);
-
-    auto cocosOffset = system->box2DToScreen(offset);
-    //TODO use this cocosOffset when adding new Sprites into this
-    //module like this,
-    //sprite->setPosition(body->getPosition()-cocosOffset)
-
 
 
     //non-physics stuff
@@ -110,23 +113,45 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
         backGroundObject = ParallaxNode::create();
         this->addChild(foreGroundObject, DRAWORDER::FOREGROUND);
         this->addChild(backGroundObject, DRAWORDER::BACKGROUND);
-
-
-
-
-        //add child and parallax ratios here
-//        foreGroundObject->addChild();
-//        foreGroundObject->addChild();
-
-
     }
+
+
+
+
+
+
 
 
 
 
     return true;
 }
+void PlayModule::onCoordsStable() {
 
+
+    Mat4 temp;
+    temp.translate(Vec2to3(system->box2DToScreen(boxInitOffset)));
+    box2dToModuleMatrix = temp*box2dToModuleMatrix;
+
+
+    //zero out offset
+    boxInitOffset = b2Vec2();
+    boxInitOffset.SetZero();
+    //test body
+//    {
+//        b2BodyDef testBodyDef;
+//        testBodyDef.type = b2_dynamicBody;
+//        b2CircleShape c;
+//        c.m_radius = 2;
+//        auto hold = system->getWorld()->CreateBody(&testBodyDef);
+//        hold->SetTransform(b2Vec2(14,9),0);
+//        hold->CreateFixture(&c,1.0f);
+//        bodies.push_back(hold);
+//
+//    }
+
+
+}
 
 PlayModule::~PlayModule() {
 
@@ -206,10 +231,8 @@ void PlayModule::postPhysicsUpdate(float delta) {
 
     cam->move2D(delta,Vec2(player->getDeltaMovement().x,0));
 
-    float angle = -1*CC_DEGREES_TO_RADIANS(cam->getRotation());
-    cocos2d::Vec2 vec(system->getWorld()->GetGravity().x,system->getWorld()->GetGravity().y);
-    auto hold = vec.rotateByAngle(Vec2::ZERO,angle);
-//    system->getWorld()->SetGravity(b2Vec2(hold.x,hold.y));
+
+
 
 }
 
@@ -226,23 +249,7 @@ void PlayModule::setCoordinatesStabilized(bool stable) {
 
 }
 
-void PlayModule::onCoordsStable() {
 
-    //test body
-//    {
-//        b2BodyDef testBodyDef;
-//        testBodyDef.type = b2_dynamicBody;
-//        b2CircleShape c;
-//        c.m_radius = 2;
-//        auto hold = system->getWorld()->CreateBody(&testBodyDef);
-//        hold->SetTransform(b2Vec2(14,9),0);
-//        hold->CreateFixture(&c,1.0f);
-//        bodies.push_back(hold);
-//
-//    }
-
-
-}
 
 void PlayModule::addPlayer(Player *player) {
 
@@ -264,7 +271,12 @@ void PlayModule::removePlayer() {
 }
 
 
-
+cocos2d::Vec2 PlayModule::tranformBox2DToModule(const b2Vec2 &pos) {
+    Vec2 hold = BtoC(pos);
+    Vec4 hold4(hold.x,hold.y,0,1);
+    hold4 = box2dToModuleMatrix*hold4;
+    return Vec2(hold4.x,hold4.y);
+}
 
 
 

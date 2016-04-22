@@ -81,9 +81,9 @@ public:
 
 private:
     bool right = false;
-    float minSpeed = 0.27f;
+    float minSpeed = 0.5f;
     float maxSpeed = 2.22f;
-
+    float increment = 0.5f;
 
     float myContribution = 0.0f;
 

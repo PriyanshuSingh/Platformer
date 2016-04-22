@@ -53,6 +53,16 @@ b2World *B2PhysicsSystem::getWorld() {
 }
 
 
+void B2PhysicsSystem::addOffset(b2Body *body,const b2Vec2 & offset) {
+
+    body->SetTransform(body->GetPosition()+offset,body->GetAngle());
+}
+
+void B2PhysicsSystem::addOffset(b2Joint *joint,const b2Vec2 & offset) {
+
+    joint->ShiftOrigin(-offset);
+}
+
 
 float32 B2PhysicsSystem::screenToBox2D(float32 in) {
     return in/ptmRatio;
@@ -138,6 +148,14 @@ void B2PhysicsSystem::resume() {
 
 }
 
+
+void B2PhysicsSystem::setSimulationSpeed(float scaleFactor) {
+
+
+    //TODO see what min value of scale factor you can have
+    //and limit it here
+    this->scaleFactor = scaleFactor;
+}
 
 
 

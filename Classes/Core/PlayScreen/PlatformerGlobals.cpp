@@ -11,6 +11,19 @@ USING_NS_CC;
 const std::string PlatformerGlobals::MainPlayerName = "MainPlayer";
 
 
+b2Vec2 CtoB(const cocos2d::Vec2 &cocosVec) {
+    return b2Vec2(cocosVec.x,cocosVec.y);
+}
+
+cocos2d::Vec2 BtoC(const b2Vec2 &bVec) {
+    return cocos2d::Vec2(bVec.x,bVec.y);
+}
+
+cocos2d::Vec3 Vec2to3(const cocos2d::Vec2 &cocosVec) {
+    return cocos2d::Vec3(cocosVec.x,cocosVec.y,0);
+
+}
+
 
 void PlatformerGlobals::drawNodeDebug(cocos2d::DrawNode * debugDrawer,const std::vector<cocos2d::Node *> & nodes) {
 
@@ -36,4 +49,20 @@ void PlatformerGlobals::drawNodeDebug(cocos2d::DrawNode * debugDrawer,const std:
 
     }
 }
+
+
+void PlatformerGlobals::printVec2(const std::string &prefix, const cocos2d::Vec2 &vec) {
+    cocos2d::log("%s %f %f",prefix.c_str(),vec.x,vec.y);
+}
+
+
+void PlatformerGlobals::printMat4RowOrder(const std::string &prefix, const cocos2d::Mat4 & mat) {
+
+    cocos2d::log("%s",prefix.c_str());
+
+    for(int i=0;i<4;i++){
+        cocos2d::log("%f %f %f %f",mat.m[i+0*4],mat.m[i+1*4],mat.m[i+2*4],mat.m[i+3*4]);
+    }
+}
+
 

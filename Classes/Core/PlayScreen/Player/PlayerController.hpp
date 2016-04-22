@@ -62,7 +62,9 @@ private:
 
 
 
-    bool moving = false;
+    bool movingLeft = false;
+    bool movingRight = false;
+
     bool jumping = false;
     bool killing = false;
     bool aliving = false;

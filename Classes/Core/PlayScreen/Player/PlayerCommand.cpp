@@ -75,6 +75,9 @@ void JumpCommand::execute() {
     target->grounded = false;
 //    cocos2d::log("applied impulse");
     auto body = target->mainBody;
+    //TODO get world gravity
+    //and apply impulse in the reverse direction of it
+    //This Allows for jump to work even when gravity reversed.
     b2Vec2 impulse(0,10);
     impulse*=body->GetMass();
 
@@ -136,21 +139,47 @@ void MoveCommand::setContribution(float c) {
 
 
 void MoveCommand::execute() {
+
     if(target->dead || !target->grounded)
         return;
 
 
 
-    //TODO correct this player velocity might be zero
     auto body = target->mainBody;
+    auto vel = Vec2(body->GetLinearVelocity().x,body->GetLinearVelocity().y);
+
+    //if velocity 0 apply horizontal impulse to get to minSpeed
+    if(vel.equals(Vec2::ZERO)){
+
+        body->ApplyLinearImpulse((right?1:-1)*body->GetMass()*myContribution*(b2Vec2(minSpeed,0)),body->GetWorldCenter(),true);
+        return;
+    }
 
 
 
-    float dir = right?1:-1;
+    float n = vel.lengthSquared();
+    n = sqrt(n);
+    float currentSpeed = n;
+    // Too close to zero.
+    if (n >= MATH_TOLERANCE) {
+        n = 1.0f / n;
+        vel.x *= n;
+        vel.y *= n;
+    }
 
-    myContribution = 1.0f;
-    body->ApplyLinearImpulse(dir*body->GetMass()*myContribution*(b2Vec2(0.5,0)),body->GetWorldCenter(),true);
 
+
+    float delta = std::min(std::abs(maxSpeed-currentSpeed),increment);
+
+    //if you exceed speed or move in other direction
+    if(currentSpeed > maxSpeed ||right != (vel.x>=0) ){
+        delta*=-1;
+    }
+
+
+    vel*=delta;
+
+    body->ApplyLinearImpulse(body->GetMass()*myContribution*b2Vec2(vel.x,vel.y),body->GetWorldCenter(),true);
 
 
 
@@ -164,6 +193,27 @@ void MoveCommand::setDirection(bool right) {
 }
 
 
+
+
+MoveCommand::~MoveCommand() {
+
+    auto it = std::find(MoveCommand::contributors.begin(), MoveCommand::contributors.end(),this);
+
+    using std::swap;
+
+    // swap the one to be removed with the last element
+    swap(*it, MoveCommand::contributors.back());
+    MoveCommand::contributors.pop_back();
+    if(MoveCommand::contributors.empty())
+        return;
+    MoveCommand::total-=myContribution;
+    float dis = myContribution/MoveCommand::contributors.size();
+    for(auto & p:MoveCommand::contributors){
+        p->myContribution+=dis;
+    }
+
+
+}
 
 
 
@@ -192,27 +242,6 @@ void KillCommand::execute() {
 
 
 
-
-
-}
-
-
-MoveCommand::~MoveCommand() {
-
-    auto it = std::find(MoveCommand::contributors.begin(), MoveCommand::contributors.end(),this);
-
-    using std::swap;
-
-    // swap the one to be removed with the last element
-    swap(*it, MoveCommand::contributors.back());
-    MoveCommand::contributors.pop_back();
-    if(MoveCommand::contributors.empty())
-        return;
-    MoveCommand::total-=myContribution;
-    float dis = myContribution/MoveCommand::contributors.size();
-    for(auto & p:MoveCommand::contributors){
-        p->myContribution+=dis;
-    }
 
 
 }

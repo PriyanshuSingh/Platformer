@@ -25,7 +25,7 @@ public:
 
 
     static PlayModule * create(const ModuleInfo & info, B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
-    bool init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
+    virtual bool init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
     //TODO delete all the acquired bodies and joints here
     virtual ~PlayModule();
 
@@ -63,7 +63,9 @@ public:
     void setCoordinatesStabilized(bool stable);
     void addPlayer(Player *player);
     void removePlayer();
-
+    const cocos2d::Mat4 & getbox2dToModuleMatrix(){ return box2dToModuleMatrix;}
+    const b2Vec2 & getInitOFfset(){return boxInitOffset;}
+    cocos2d::Vec2 tranformBox2DToModule(const b2Vec2 & pos);
 protected:
 
 
@@ -94,11 +96,14 @@ protected:
     };
 
 
+
     void addOffsetBodiesAndJoints(const b2Vec2 &offset);
 
 
 
 
+    //TODO see where to keep them
+    //probably better to have them in a seperate Node in the PlayScene
     //add foreground and background objects to these guys
     cocos2d::ParallaxNode * backGroundObject;
     cocos2d::ParallaxNode * foreGroundObject;
@@ -109,16 +114,19 @@ protected:
 
 
 
-private:
-    //NVI for the win
+
+
+    cocos2d::Mat4 box2dToModuleMatrix;
+
+
+protected:
     virtual void onCoordsStable();
 
 //parent methods made private here
     using cocos2d::Layer::setAnchorPoint;
 
 
-
-
+    b2Vec2 boxInitOffset;
 };
 
 

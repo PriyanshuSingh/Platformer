@@ -70,7 +70,7 @@ private:
 private:
 
 
-    //Player retains a copy
+    //Player retained copy
     Player * mainPlayer = nullptr;
 
 

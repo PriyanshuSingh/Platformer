@@ -235,7 +235,7 @@ void ModuleContainer::loadCurrentModule() {
 
     this->addChild(current,DRAWORDER::MIDDLEGROUND);
 
-
+    current->setCameraMask(current->getParent()->getCameraMask(),true);
 
 
 
@@ -258,8 +258,10 @@ void ModuleContainer::loadNextModule() {
         return;
     }
     next = ModuleEntries::getNextModule(currentLevel+1,system,cam,system->screenToBox2D(offset));
-    next->setPosition(Vec2(current->getContentSize().width,0));
+    next->setPosition(offset);
     this->addChild(next,DRAWORDER::MIDDLEGROUND);
+    next->setCameraMask(next->getParent()->getCameraMask(),true);
+
 
 
 
@@ -293,6 +295,12 @@ PlayModule *ModuleContainer::getCurrentModule() {
 }
 
 void ModuleContainer::prePhysicsUpdate(float delta) {
+
+
+
+    CCASSERT(getNodeToWorldTransform().isIdentity(),"Don't tranform Container");
+
+
 
 
     //TODO move these to the current prePhysicsUpdate for

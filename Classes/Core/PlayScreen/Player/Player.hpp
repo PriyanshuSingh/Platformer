@@ -19,10 +19,10 @@ class PlayerCommand;
 
 class Player: public cocos2d::Node{
 
-friend class JumpCommand;
-friend class MoveCommand;
-friend class KillCommand;
-friend class AliveCommand;
+    friend class JumpCommand;
+    friend class MoveCommand;
+    friend class KillCommand;
+    friend class AliveCommand;
 
 public:
     //creation deletion methods
@@ -103,13 +103,13 @@ private:
 
 
 //save player body info
-struct PlayerInfo {
-    std::string rubeInfo;
-    Json::Value mainBody;
+    struct PlayerInfo {
+        std::string rubeInfo;
+        Json::Value mainBody;
 
-};
+    };
 
-PlayerInfo playerInfo;
+    PlayerInfo playerInfo;
 
 //required stuff
 private:
@@ -136,6 +136,7 @@ private:
     void killMe();
     void bringToLife(const b2Vec2 &pos,float degrees);
 
+    b2Vec2 prevPosition;
 };
 
 

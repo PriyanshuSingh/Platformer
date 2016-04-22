@@ -32,7 +32,10 @@ public:
 
 
 
+//TODO add ability to follow objects
 
+
+    cocos2d::Vec2 getDownVector();
     void move2D(float delta,const cocos2d::Vec2 & displacement);
 
 
