@@ -16,11 +16,9 @@
 #define ADD_CHILD_MASK(__PARENT__) \
 virtual void addChild(cocos2d::Node *child) override {\
     __PARENT__::addChild(child);                   \
-    child->setCameraMask(getCameraMask());            \
 }                                                     \
 virtual void addChild(cocos2d::Node *child, int localZOrder) override {\
     __PARENT__::addChild(child, localZOrder);                          \
-    child->setCameraMask(getCameraMask());                             \
 }                                                                      \
 virtual void addChild(cocos2d::Node *child, int localZOrder, int tag) override {\
     __PARENT__::addChild(child, localZOrder, tag);                              \
