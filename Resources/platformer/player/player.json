@@ -31,7 +31,6 @@
 				
 				{
 					"density" : 1,
-					"friction" : 0.2,
 					"name" : "BodyFixture",
 					"polygon" : 
 					{

@@ -2,7 +2,7 @@
 // Created by ashish on 4/21/16.
 //
 
-#include <Core/PlayScreen/PlatformerGlobals.hpp>
+#include "../../../PlatformerGlobals.hpp"
 #include "TestModule.hpp"
 
 
@@ -24,13 +24,6 @@ bool TestModule::init(const PlayModule::ModuleInfo &info, B2PhysicsSystem *syste
 
 
 
-    bool static once  = true;
-    if(once){
-        once = false;
-
-        srand(time(NULL));
-
-    }
 
 
     return true;
@@ -57,12 +50,9 @@ void TestModule::onCoordsStable() {
     cocos2d::log("on coords stable");
 
 
-
-
     newActor = TestActor::create(system,this,boxInitOffset);
     this->addChild(newActor);
-    newActor->onModuleActive();
-
+    newActor->setModuleActive(true);
 
 
 }

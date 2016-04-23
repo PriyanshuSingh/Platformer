@@ -2,7 +2,7 @@
 // Created by ashish on 4/18/16.
 //
 
-#include "./Modules/TestModule.hpp"
+#include "./Modules/TestModule/TestModule.hpp"
 #include "ModuleEntries.hpp"
 
 std::vector<ModuleEntries::ModuleHolder> ModuleEntries::entries;
@@ -14,8 +14,13 @@ void ModuleEntries::initVector() {
     initDone = true;
 
     typedef PlayModule::ModuleInfo inf;
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),PlayModule::create));
     entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene1.json"),TestModule::create));
+
 
 
 

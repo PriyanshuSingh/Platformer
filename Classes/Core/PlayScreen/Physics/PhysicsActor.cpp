@@ -4,27 +4,32 @@
 
 #include "PhysicsActor.hpp"
 #include "b2PhysicsSystem.hpp"
-#include "PlatformerGlobals.hpp"
-#include "./ModuleSystem/PlayModule.hpp"
+#include "../ModuleSystem/PlayModule.hpp"
 USING_NS_CC;
-bool PhysicsActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & offset) {
+bool PhysicsActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initOffset) {
     if(!Node::init()) {
         return false;
     }
     this->system = system;
     this->parentModule = parent;
-    this->setCameraMask(parent->getCameraMask(),true);
-
-    this->offset = offset;
     CCASSERT(parentModule!= nullptr,"parent module null!!");
+
+
     return true;
 }
 
 
+void PhysicsActor::setModuleActive(bool stable) {
 
-TestActor *TestActor::create(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & offset) {
+    if(stable == this->stable)return;
+    this->stable = stable;
+    if(stable)onModuleActive();
+}
+
+
+TestActor *TestActor::create(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initOffset) {
     auto tActor = new(std::nothrow)TestActor();
-    if(tActor && tActor->init(system,parent,offset)){
+    if(tActor && tActor->init(system,parent,initOffset)){
         tActor->autorelease();
         return tActor;
     }
@@ -32,14 +37,13 @@ TestActor *TestActor::create(B2PhysicsSystem *system,PlayModule * parent,const b
     return nullptr;
 }
 
-bool TestActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & offset) {
-    if(!PhysicsActor::init(system,parent,offset)){
+bool TestActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initOffset) {
+    if(!PhysicsActor::init(system,parent,initOffset)){
         return false;
     }
 
 
-    this->setAnchorPoint(Vec2::ZERO);
-
+    type = ActorType::Void;
     {
         b2BodyDef testBodyDef;
         testBodyDef.type = b2_dynamicBody;
@@ -49,12 +53,13 @@ bool TestActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & 
         bod = system->getWorld()->CreateBody(&testBodyDef);
 
 
-        bod->SetTransform(b2Vec2(rand()%8,1+rand()%8), 0);
+        bod->SetTransform(b2Vec2(8,8), 0);
         bod->CreateFixture(&p, 1.0f);
-        system->addOffset(bod, offset);
+        system->addOffset(bod, initOffset);
 
         bod->SetActive(false);
 
+        bod->SetUserData(this);
 
     }
 
@@ -96,6 +101,15 @@ void TestActor::postPhysicsUpdate(float delta) {
 }
 
 
+TestActor::~TestActor() {
+
+    if(system->isSystemActive()){
+
+        system->getWorld()->DestroyBody(bod);
+
+
+    }
+}
 
 
 void TestActor::onModuleActive() {

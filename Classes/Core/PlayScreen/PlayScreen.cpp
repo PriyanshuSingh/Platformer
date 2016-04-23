@@ -4,7 +4,7 @@
 
 #include "PlayScreen.hpp"
 #include "PlatformerGlobals.hpp"
-#include "b2PhysicsSystem.hpp"
+#include "./Physics/b2PhysicsSystem.hpp"
 #include "../../helper/GLES-Render.h"
 #include "ModuleSystem/PlayModule.hpp"
 #include "ModuleSystem/ModuleContainer.hpp"
@@ -151,19 +151,11 @@ void PlayScreen::update(float delta){
 
 
 
-
-    //TODO stuff applied on player here
-    //forces and stuff
-
-    //appy forces,Do Box2D stuff here
+    //setup physics commands and stuff here
     container->prePhysicsUpdate(delta);
-
     physicsSystem->update(delta);
-
-
     //update cocos2d-x structures
     container->postPhysicsUpdate(delta);
-    //update position of player and stuff here
 
 
 

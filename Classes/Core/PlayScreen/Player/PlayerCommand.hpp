@@ -9,13 +9,6 @@
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 
-//
-//bool isEqual(const pair<string, int> element)
-//{
-//    return element.first ==  User.name;
-//}
-//it = find_if( sortList.begin(), sortList.end(), isEqual );
-
 
 
 

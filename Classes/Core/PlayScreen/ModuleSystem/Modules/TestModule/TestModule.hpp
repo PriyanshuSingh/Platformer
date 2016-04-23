@@ -5,8 +5,8 @@
 #ifndef MYGAME_TESTMODULE_HPP
 #define MYGAME_TESTMODULE_HPP
 
-#include "../PlayModule.hpp"
-#include "../../PhysicsActor.hpp"
+#include "../../PlayModule.hpp"
+#include "../../../Physics/PhysicsActor.hpp"
 class TestModule:public PlayModule {
 public:
     CREATE_MODULE(TestModule);

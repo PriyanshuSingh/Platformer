@@ -140,9 +140,9 @@ set(GAME_SRC
   Classes/Core/PlayScreen/PlatformerGlobals.cpp
   Classes/Core/PlayScreen/GameUiLayer.cpp
   Classes/Core/PlayScreen/MainCamera.cpp
-  Classes/Core/PlayScreen/b2PhysicsSystem.cpp
+  Classes/Core/PlayScreen/Physics/b2PhysicsSystem.cpp
+  Classes/Core/PlayScreen/Physics/PhysicsActor.cpp
   Classes/Core/PlayScreen/PlayScreen.cpp
-  Classes/Core/PlayScreen/PhysicsActor.cpp
 
   #player
   Classes/Core/PlayScreen/Player/Player.cpp
@@ -156,7 +156,7 @@ set(GAME_SRC
   Classes/Core/PlayScreen/ModuleSystem/ModuleEntries.cpp
 
   #modules
-  Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule.cpp
+  Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.cpp
 
   ${PLATFORM_SPECIFIC_SRC}
 )
@@ -174,9 +174,10 @@ set(GAME_HEADERS
         Classes/Core/PlayScreen/PlatformerGlobals.hpp
         Classes/Core/PlayScreen/GameUiLayer.hpp
         Classes/Core/PlayScreen/MainCamera.hpp
-        Classes/Core/PlayScreen/b2PhysicsSystem.hpp
+        Classes/Core/PlayScreen/Physics/b2PhysicsSystem.hpp
+        Classes/Core/PlayScreen/Physics/PhysicsActor.hpp
         Classes/Core/PlayScreen/PlayScreen.hpp
-        Classes/Core/PlayScreen/PhysicsActor.hpp
+
 
         #player
         Classes/Core/PlayScreen/Player/Player.hpp
@@ -192,7 +193,7 @@ set(GAME_HEADERS
 
 
         #modules
-        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule.hpp
+        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.hpp
   ${PLATFORM_SPECIFIC_HEADERS}
 )
 

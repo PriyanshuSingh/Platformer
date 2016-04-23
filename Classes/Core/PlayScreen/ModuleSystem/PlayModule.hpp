@@ -66,6 +66,9 @@ public:
     virtual void onPlayerDeath(){}
 
 
+//cocos2d-x overrides
+//Note:not overriden setPosition3D,used by actions and stuff
+virtual void setPosition(const cocos2d::Vec2 &position) override;
 
 //Box2D overrides
 
@@ -86,6 +89,8 @@ public:
     const cocos2d::Mat4 & getbox2dToModuleMatrix(){ return box2dToModuleMatrix;}
     const b2Vec2 & getInitOFfset(){return boxInitOffset;}
     cocos2d::Vec2 tranformBox2DToModule(const b2Vec2 & pos);
+    bool getIsStable()const;
+
 protected:
 
 

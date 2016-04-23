@@ -5,7 +5,7 @@
 
 #include "../PlatformerGlobals.hpp"
 #include "PlayModule.hpp"
-#include "../b2PhysicsSystem.hpp"
+#include "../Physics/b2PhysicsSystem.hpp"
 #include "../../../rubeStuff/b2dJson.h"
 #include "../Player/Player.hpp"
 #include "ModuleContainer.hpp"
@@ -67,9 +67,6 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
 
 //update bounding box size based on the Box2D body
     setContentSize(Size(system->box2DToScreen(boundingBody->GetPosition())));
-
-
-
 
 
     json.getAllBodies(bodies);
@@ -215,6 +212,12 @@ void PlayModule::postPhysicsUpdate(float delta) {
 }
 
 
+void PlayModule::setPosition(const cocos2d::Vec2 &position) {
+    Node::setPosition(position);
+    //TODO update matrix here
+}
+
+
 float PlayModule::getOffset() {
     return adjustOffset;
 }
@@ -255,6 +258,13 @@ cocos2d::Vec2 PlayModule::tranformBox2DToModule(const b2Vec2 &pos) {
     hold4 = box2dToModuleMatrix*hold4;
     return Vec2(hold4.x,hold4.y);
 }
+
+bool PlayModule::getIsStable() const{
+    return coordsStable;
+
+}
+
+
 
 
 
