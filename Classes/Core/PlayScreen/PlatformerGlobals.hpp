@@ -13,6 +13,7 @@
 #define DEBUGGING_APP
 
 
+
 #define ADD_CHILD_MASK(__PARENT__) \
 virtual void addChild(cocos2d::Node *child) override {\
     __PARENT__::addChild(child);                   \
@@ -44,7 +45,7 @@ namespace cocos2d {
 b2Vec2 CtoB(const cocos2d::Vec2 & cocosVec);
 cocos2d::Vec2 BtoC(const  b2Vec2 & bVec);
 cocos2d::Vec3 Vec2to3(const cocos2d::Vec2 & cocosVec);
-
+float AngleBToC(float angle);
 
 
 

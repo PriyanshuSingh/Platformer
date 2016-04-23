@@ -46,6 +46,15 @@ public:
 
 
     virtual bool init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
+
+protected:
+    //THIS IS YOUR ACTIVE constructor
+    //before this your pre/post physics update are not called,
+    //you don't get world callbacks,player is null etc.
+    virtual void onCoordsStable();
+
+
+public:
     //TODO delete all the acquired bodies and joints here
     virtual ~PlayModule();
 
@@ -67,8 +76,6 @@ public:
 
 
 //cocos2d-x overrides
-//Note:not overriden setPosition3D,used by actions and stuff
-virtual void setPosition(const cocos2d::Vec2 &position) override;
 
 //Box2D overrides
 
@@ -86,9 +93,7 @@ virtual void setPosition(const cocos2d::Vec2 &position) override;
     void setCoordinatesStabilized(bool stable);
     void addPlayer(Player *player);
     void removePlayer();
-    const cocos2d::Mat4 & getbox2dToModuleMatrix(){ return box2dToModuleMatrix;}
     const b2Vec2 & getInitOFfset(){return boxInitOffset;}
-    cocos2d::Vec2 tranformBox2DToModule(const b2Vec2 & pos);
     bool getIsStable()const;
 
 protected:
@@ -141,16 +146,10 @@ protected:
 
 
 
-    cocos2d::Mat4 box2dToModuleMatrix;
 
-
-protected:
-    virtual void onCoordsStable();
 
 //parent methods made private here
     using cocos2d::Layer::setAnchorPoint;
-
-
     b2Vec2 boxInitOffset;
 };
 

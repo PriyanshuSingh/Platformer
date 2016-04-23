@@ -20,6 +20,7 @@ bool TestModule::init(const PlayModule::ModuleInfo &info, B2PhysicsSystem *syste
 
 
 
+
     PlatformerGlobals::printVec2("the offset is ",BtoC(boxInitOffset));
 
 
@@ -37,9 +38,12 @@ void TestModule::prePhysicsUpdate(float delta) {
 void TestModule::postPhysicsUpdate(float delta) {
     PlayModule::postPhysicsUpdate(delta);
 
-    if(newActor!= nullptr){
-        newActor->postPhysicsUpdate(delta);
-    }
+
+
+
+
+        newActor->update(delta);
+        actor2->update(delta);
 }
 
 
@@ -50,9 +54,14 @@ void TestModule::onCoordsStable() {
     cocos2d::log("on coords stable");
 
 
-    newActor = TestActor::create(system,this,boxInitOffset);
+
+    newActor = TestActor::create(system,this,boxInitOffset+b2Vec2(2,2));
     this->addChild(newActor);
-    newActor->setModuleActive(true);
+
+
+    actor2 = TestActor2::create(system,this,boxInitOffset+b2Vec2(2,2));
+    this->addChild(actor2);
+
 
 
 }

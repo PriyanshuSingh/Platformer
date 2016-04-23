@@ -68,17 +68,11 @@ bool LoadingScreen::init(GameManager *manager) {
 
     //schedule data loader
     float freqeuncy = 1/20.0f;
-    float switchTime = 3.0f;
-
 
 
     //schedule at frequency
     this->schedule(schedule_selector(LoadingScreen::loadData),freqeuncy);
 
-
-    //TODO change this don't assume stuff loaded in 3secs
-    //switch to start screen after 3 secs
-    this->scheduleOnce(schedule_selector(LoadingScreen::onDone), switchTime);
 
 
 
@@ -91,12 +85,16 @@ bool LoadingScreen::init(GameManager *manager) {
 
 
 
-void LoadingScreen::loadData(float delta) {
-    loader.step();
+void LoadingScreen::loadData() {
+    bool done = loader.step();
+    if(done) {
+        unschedule(schedule_selector(LoadingScreen::loadData));
+        onDone();
+    }
 }
 
 
-void LoadingScreen::onDone(float delta) {
+void LoadingScreen::onDone() {
 
     manager->switchToPlayScene();
 
@@ -106,14 +104,12 @@ void LoadingScreen::onDone(float delta) {
 
 
 
-void LoadingScreen::Loader::step() {
+bool LoadingScreen::Loader::step() {
 
 
 
 
 
-    if(done)
-        return;
 
 
 
@@ -154,7 +150,7 @@ void LoadingScreen::Loader::step() {
     //set done
     done = (remainingSpriteSheets == 0)&&(remainingTextures)&&(remainingBackgroundEffects == 0)&&(remainingEffects ==0);
 
-
+    return done;
 
 
 

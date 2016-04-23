@@ -26,8 +26,8 @@ private:
 private:
 
     TestActor * actor = nullptr;
-
     TestActor *newActor = nullptr;
+    TestActor2 * actor2 = nullptr;
 };
 
 

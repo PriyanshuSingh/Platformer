@@ -18,7 +18,7 @@ bool B2PhysicsSystem::isSystemActive() {
 
 
 
-B2PhysicsSystem::B2PhysicsSystem(float32 ptmRatio,const b2Vec2 & gravity,bool interpolate):ptmRatio(ptmRatio),interpolate(interpolate),paused(false),worldSettings() {
+B2PhysicsSystem::B2PhysicsSystem(float32 ptmRatio,const b2Vec2 & gravity,bool interpolate):ptmRatio(ptmRatio),interpolate(interpolate),paused(false),updated(false),worldSettings() {
 
 
 
@@ -42,15 +42,21 @@ B2PhysicsSystem::~B2PhysicsSystem() {
 }
 
 
+void B2PhysicsSystem::setUpdated(bool update) {
+    updated = update;
+}
+
+
+
+b2World *B2PhysicsSystem::getWorld() {
+    return phyWorld;
+}
 void B2PhysicsSystem::interpolation(bool enable) {
 
     interpolate = enable;
 }
 
 
-b2World *B2PhysicsSystem::getWorld() {
-    return phyWorld;
-}
 
 
 void B2PhysicsSystem::addOffset(b2Body *body,const b2Vec2 & offset) {

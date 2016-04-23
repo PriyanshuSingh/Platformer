@@ -28,6 +28,7 @@ private:
         std::vector<std::string> backgroundeffects;
         std::vector<std::string> effects;
         //other vectors here
+        std::vector<std::pair<std::string,std::string> > jsonRubeStuff;
 
 
 
@@ -35,8 +36,7 @@ private:
 
 
 
-
-        void step();
+        bool step();
 
     private:
 
@@ -60,8 +60,8 @@ public:
 
 
 private:
-    void loadData(float delta);
-    void onDone(float delta);
+    void loadData();
+    void onDone();
 
 private:
     GameManager * manager = nullptr;

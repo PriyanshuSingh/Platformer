@@ -24,6 +24,10 @@ cocos2d::Vec3 Vec2to3(const cocos2d::Vec2 &cocosVec) {
 
 }
 
+float AngleBToC(float angle){
+    return -CC_RADIANS_TO_DEGREES(angle);
+}
+
 
 void PlatformerGlobals::drawNodeDebug(cocos2d::DrawNode * debugDrawer,const std::vector<cocos2d::Node *> & nodes) {
 

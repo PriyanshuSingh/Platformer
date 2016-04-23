@@ -151,9 +151,11 @@ void PlayScreen::update(float delta){
 
 
 
+    physicsSystem->setUpdated(false);
     //setup physics commands and stuff here
     container->prePhysicsUpdate(delta);
     physicsSystem->update(delta);
+    physicsSystem->setUpdated(true);
     //update cocos2d-x structures
     container->postPhysicsUpdate(delta);
 

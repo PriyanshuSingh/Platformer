@@ -22,6 +22,9 @@ public:
     ~B2PhysicsSystem();
 
 
+    void setUpdated(bool update);
+    //returns whether the physics update has happened this tick or not
+    bool hasUpdated(){return updated;}
     b2World* getWorld();
 
 
@@ -119,6 +122,7 @@ private:
     bool interpolate;
     float32 ptmRatio;
     bool paused;
+    bool updated;
     float scaleFactor = 1.0f;
 
     Settings worldSettings;

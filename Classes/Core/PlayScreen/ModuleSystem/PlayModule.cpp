@@ -28,9 +28,6 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
         this->system = system;
 
         boxInitOffset = offset;
-        box2dToModuleMatrix.translate(Vec2to3(-1*system->box2DToScreen(boxInitOffset)));
-        float32 ratio = system->getPtmRatio();
-        box2dToModuleMatrix.scale(Vec3(ratio,ratio,0));
 
     }
     // Find out the absolute path for the file
@@ -102,30 +99,9 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
     return true;
 }
 void PlayModule::onCoordsStable() {
-
-
-    Mat4 temp;
-    temp.translate(Vec2to3(system->box2DToScreen(boxInitOffset)));
-    box2dToModuleMatrix = temp*box2dToModuleMatrix;
-
-
     //zero out offset
     boxInitOffset = b2Vec2();
     boxInitOffset.SetZero();
-    //test body
-//    {
-//        b2BodyDef testBodyDef;
-//        testBodyDef.type = b2_dynamicBody;
-//        b2CircleShape c;
-//        c.m_radius = 2;
-//        auto hold = system->getWorld()->CreateBody(&testBodyDef);
-//        hold->SetTransform(b2Vec2(14,9),0);
-//        hold->CreateFixture(&c,1.0f);
-//        bodies.push_back(hold);
-//
-//    }
-
-
 }
 
 PlayModule::~PlayModule() {
@@ -212,11 +188,6 @@ void PlayModule::postPhysicsUpdate(float delta) {
 }
 
 
-void PlayModule::setPosition(const cocos2d::Vec2 &position) {
-    Node::setPosition(position);
-    //TODO update matrix here
-}
-
 
 float PlayModule::getOffset() {
     return adjustOffset;
@@ -252,12 +223,6 @@ void PlayModule::removePlayer() {
 }
 
 
-cocos2d::Vec2 PlayModule::tranformBox2DToModule(const b2Vec2 &pos) {
-    Vec2 hold = BtoC(pos);
-    Vec4 hold4(hold.x,hold.y,0,1);
-    hold4 = box2dToModuleMatrix*hold4;
-    return Vec2(hold4.x,hold4.y);
-}
 
 bool PlayModule::getIsStable() const{
     return coordsStable;

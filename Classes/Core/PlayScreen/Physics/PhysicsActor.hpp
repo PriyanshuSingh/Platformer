@@ -23,13 +23,18 @@ public:
 
     };
     ADD_CHILD_MASK(cocos2d::Node);
-    virtual bool init(B2PhysicsSystem * system,PlayModule * parent,const b2Vec2 & initOffset);
+    virtual bool init(B2PhysicsSystem * system,PlayModule * parent,const b2Vec2 & initPosition);
+
+
+    //override this method to use setup initial position based
+    //on Box2d objects as this is called when added to the "Stage"
+    void onEnter() override;
+    void update(float delta) override final;
     virtual ~PhysicsActor(){}
-    virtual void prePhysicsUpdate(float delta){}
-    virtual void postPhysicsUpdate(float delta){}
     //return movement in Cocos Coordinates based on your physics Stuff
     virtual cocos2d::Vec2 getDeltaMovement()=0;
-    void setModuleActive(bool stable);
+    cocos2d::Vec2 box2DToActorSpace(const b2Vec2 & bPos)const;
+    cocos2d::Vec2 box2DToActorParentSpace(const b2Vec2 bPos)const;
 
 
 
@@ -38,10 +43,12 @@ public:
 protected:
     B2PhysicsSystem * system = nullptr;
     PlayModule * parentModule = nullptr;
+    b2Vec2 initPosition;
     ActorType type = ActorType::Void;
 private:
-    virtual void onModuleActive()=0;
-    bool stable = false;
+    virtual void prePhysicsUpdate(float delta){}
+    virtual void postPhysicsUpdate(float delta){}
+
 
 };
 
@@ -49,19 +56,49 @@ private:
 class TestActor:public PhysicsActor{
 public:
 
-    static TestActor * create(B2PhysicsSystem * system,PlayModule * parent,const b2Vec2 & initOffset);
-    bool init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initOffset) override;
+    static TestActor * create(B2PhysicsSystem * system,PlayModule * parent,const b2Vec2 & initPosition);
+    bool init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initPosition) override;
+
+    void onEnter() override;
     virtual ~TestActor();
-    virtual void postPhysicsUpdate(float delta) override;
 
     cocos2d::Vec2 getDeltaMovement() override;
 
 
 private:
-    void onModuleActive()override;
+    virtual void postPhysicsUpdate(float delta) override;
+
     b2Body * bod = nullptr;
     cocos2d::Sprite *sprite = nullptr;
 };
+
+
+class TestActor2:public PhysicsActor{
+public:
+
+    static TestActor2 * create(B2PhysicsSystem * system,PlayModule * parent,const b2Vec2 & initPosition);
+    bool init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initPosition) override;
+
+    void onEnter() override;
+    virtual ~TestActor2();
+
+    cocos2d::Vec2 getDeltaMovement() override;
+
+private:
+    virtual void postPhysicsUpdate(float delta) override;
+
+    cocos2d::Sprite *circleSprite = nullptr;
+    cocos2d::Sprite *boxSprite = nullptr;
+
+
+    b2Body *mainBody = nullptr;
+    b2Body *circleBody = nullptr;
+
+
+
+};
+
+
 
 
 
