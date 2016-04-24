@@ -44,7 +44,9 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system) {
 
     }
 
-    std::string fileName("platformer/player/player.json");
+    system->addJsonObject("Platformer/Player/player.json");
+
+    std::string fileName("Platformer/Player/player.json");
 
     // Find out the absolute path for the file
     std::string fullpath = FileUtils::getInstance()->fullPathForFilename(fileName.c_str());

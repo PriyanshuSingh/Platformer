@@ -6,13 +6,15 @@
 #define B2PHYSICSSYSTEM_HPP
 
 
-
+#include "rubeStuff/b2dJson.h"
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 
 class B2PhysicsSystem {
 public:
 
+
+    b2dJson addJsonObject(const std::string & filename);
 
     //check if an instance of world exists
     static bool isSystemActive();

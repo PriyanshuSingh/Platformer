@@ -10,13 +10,13 @@
 #include "../Player/Player.hpp"
 #include "ModuleContainer.hpp"
 #include "../MainCamera.hpp"
-
+#include "cocostudio/CocoStudio.h"
 USING_NS_CC;
 
 
 
 
-bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) {
+bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) {
     if(!Layer::init()){
         return false;
     }
@@ -28,55 +28,60 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
         this->system = system;
         this->boxInitOffset = offset;
     }
-    // Find out the absolute path for the file
-    std::string path = FileUtils::getInstance()->fullPathForFilename(info.rubeInfo.c_str());
+//    // Find out the absolute path for the file
+//    std::string path = FileUtils::getInstance()->fullPathForFilename(info.rubeInfo.c_str());
+//
+//
+//    // This will print out the actual location on disk that the file is read from.
+//    // When using the simulator, exporting your RUBE scene to this folder means
+//    // you can edit the scene and reload it without needing to restart the app.
+//#ifdef DEBUGGING_APP
+//    CCLOG("Full path is: %s", path.c_str());
+//#endif
+//    // Create the world from the contents of the RUBE .json file. If something
+//    // goes wrong, m_world will remain NULL and errMsg will contain some info
+//    // about what happened.
+//    b2dJson json;
+//    std::string errMsg;
+//    std::string jsonContent = FileUtils::getInstance()->getStringFromFile(path);
+//    json.readFromString(jsonContent, errMsg,system->getWorld());
+//
+//
+//#ifdef DEBUGGING_APP
+//
+//    if(errMsg.empty()){
+//        cocos2d::log("no error occured json loaded ok");
+//    }
+//    else{
+//        cocos2d::log("Error occured : %s",errMsg.c_str());
+//    }
+//#endif
 
-
-    // This will print out the actual location on disk that the file is read from.
-    // When using the simulator, exporting your RUBE scene to this folder means
-    // you can edit the scene and reload it without needing to restart the app.
-#ifdef DEBUGGING_APP
-    CCLOG("Full path is: %s", path.c_str());
-#endif
-    // Create the world from the contents of the RUBE .json file. If something
-    // goes wrong, m_world will remain NULL and errMsg will contain some info
-    // about what happened.
-    b2dJson json;
-    std::string errMsg;
-    std::string jsonContent = FileUtils::getInstance()->getStringFromFile(path);
-    json.readFromString(jsonContent, errMsg,system->getWorld());
-
-
-#ifdef DEBUGGING_APP
-
-    if(errMsg.empty()){
-        cocos2d::log("no error occured json loaded ok");
-    }
-    else{
-        cocos2d::log("Error occured : %s",errMsg.c_str());
-    }
-#endif
-
+    auto json = system->addJsonObject(info.rubeInfo);
     b2Body * boundingBody = json.getBodyByName("BoundingBox");
     CCASSERT(boundingBody,"Bounding Body does not exist");
-
-//update bounding box size based on the Box2D body
-    setContentSize(Size(system->box2DToScreen(boundingBody->GetPosition())));
-
-
-    json.getAllBodies(bodies);
-    json.getAllJoints(joints);
-
-
-
-
-    //add bodies here only for debugging when they don't need any visual representation
-    //shift bodies ahead(In Rube they were made relative to world Origin).
-    addOffsetBodiesAndJoints(offset);
-
-
-    //load corresponding sprites and stuff from Csloader
     {
+        //update bounding box size based on the Box2D body
+        setContentSize(Size(system->box2DToScreen(boundingBody->GetPosition())));
+
+
+        json.getAllBodies(bodies);
+        json.getAllJoints(joints);
+
+
+
+
+        //add bodies here only for debugging when they don't need any visual representation
+        //shift bodies ahead(In Rube they were made relative to world Origin).
+        addOffsetBodiesAndJoints(offset);
+
+    }
+    //load corresponding sprites and stuff from CS Loader
+    {
+
+
+        auto rootNode = CSLoader::createNode(info.cocosInfo);
+        addChild(rootNode,DRAWORDER::MIDDLEGROUND);
 
     }
 
@@ -85,8 +90,8 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
     {
         foreGroundObject = ParallaxNode::create();
         backGroundObject = ParallaxNode::create();
-        this->addChild(foreGroundObject, DRAWORDER::FOREGROUND);
-        this->addChild(backGroundObject, DRAWORDER::BACKGROUND);
+        addChild(foreGroundObject, DRAWORDER::FOREGROUND);
+        addChild(backGroundObject, DRAWORDER::BACKGROUND);
     }
 
 
@@ -137,18 +142,14 @@ void PlayModule::addOffsetBodiesAndJoints(const b2Vec2 &offset) {
 
     for (size_t i = 0; i< bodies.size(); ++i)
     {
-        b2Vec2 pos = bodies.at(i)->GetPosition();
-        float angle = bodies.at(i)->GetAngle();
-        bodies.at(i)->SetTransform(pos+offset,angle);
+        system->addOffset(bodies.at(i),offset);
 
     }
-    //TODO confirm this shift here
-
     for (size_t i= 0; i < joints.size(); ++i)
     {
 
-        //note the minus here
-        joints.at(i)->ShiftOrigin(-offset);
+        system->addOffset(joints.at(i),offset);
+
     }
 
 

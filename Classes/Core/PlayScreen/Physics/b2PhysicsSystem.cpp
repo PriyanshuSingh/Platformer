@@ -4,12 +4,39 @@
 
 #include "b2PhysicsSystem.hpp"
 
-
+#include "../PlatformerGlobals.hpp"
 
 
 USING_NS_CC;
 
 bool B2PhysicsSystem::made = false;
+
+
+b2dJson B2PhysicsSystem::addJsonObject(const std::string &filename) {
+    //TODO replace this with preloaded strings to avoid loading data at runtime
+    std::string path = FileUtils::getInstance()->fullPathForFilename(filename.c_str());
+    b2dJson json;
+    std::string errMsg;
+    std::string jsonContent = FileUtils::getInstance()->getStringFromFile(path);
+#ifdef DEBUGGING_APP
+    cocos2d::log("Full path is: %s", path.c_str());
+#endif
+
+    json.readFromString(jsonContent, errMsg,this->getWorld());
+
+#ifdef DEBUGGING_APP
+
+    if(errMsg.empty()){
+        cocos2d::log("no error occured json loaded ok");
+    }
+    else{
+        cocos2d::log("Error occured : %s",errMsg.c_str());
+    }
+#endif
+    return json;
+
+}
+
 
 bool B2PhysicsSystem::isSystemActive() {
     return B2PhysicsSystem::made;

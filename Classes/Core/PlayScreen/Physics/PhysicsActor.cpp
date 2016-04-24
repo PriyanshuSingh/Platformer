@@ -146,20 +146,7 @@ bool TestActor2::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
     if(!PhysicsActor::init(system,ActorType ::Interactive,initPosition)){
         return false;
     }
-    b2dJson json;
-    std::string errMsg;
-    std::string jsonContent = FileUtils::getInstance()->getStringFromFile("platformer/rubeScenes/test.json");
-    json.readFromString(jsonContent,errMsg,system->getWorld());
-
-#ifdef DEBUGGING_APP
-
-    if(errMsg.empty()){
-        cocos2d::log("no error occured json loaded ok");
-    }
-    else{
-        cocos2d::log("Error occured : %s",errMsg.c_str());
-    }
-#endif
+    auto json = system->addJsonObject("Platformer/RubeScenes/test.json");
 
     {
         mainBody = json.getBodyByName("MainBody");

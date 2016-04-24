@@ -11,7 +11,7 @@
 
 //helper macros
 #define CREATE_MODULE(__TYPE__) \
-static PlayModule* create(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) \
+static PlayModule* create(const staticInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset) \
 { \
     PlayModule *pRet = new(std::nothrow) __TYPE__(); \
     if (pRet && pRet->init(info,system,cam,offset)) \
@@ -35,9 +35,10 @@ class MainCamera;
 
 class PlayModule:public cocos2d::Layer,public b2ContactListener,public b2DestructionListener{
 public:
-    struct ModuleInfo{
-        ModuleInfo(const std::string & rubeInfo):rubeInfo(rubeInfo){}
+    struct staticInfo{
+        staticInfo(const std::string & rubeInfo,const std::string & cocosInfo):rubeInfo(rubeInfo),cocosInfo(cocosInfo){}
         std::string rubeInfo;
+        std::string cocosInfo;
     };
 
     CREATE_MODULE(PlayModule);
@@ -45,7 +46,7 @@ public:
 
 
 
-    virtual bool init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
+    virtual bool init(const staticInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
 
 protected:
     //THIS IS YOUR ACTIVE constructor

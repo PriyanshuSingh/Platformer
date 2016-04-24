@@ -13,14 +13,12 @@ void ModuleEntries::initVector() {
         return;
     initDone = true;
 
-    typedef PlayModule::ModuleInfo inf;
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene3.json"),TestModule::create));
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene3.json"),TestModule::create));
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene3.json"),TestModule::create));
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene3.json"),TestModule::create));
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene3.json"),TestModule::create));
-    entries.push_back(ModuleHolder(inf("platformer/rubeScenes/scene3.json"),TestModule::create));
-
+    typedef PlayModule::staticInfo inf;
+    inf i1("Platformer/Modules/TestModule/box/scene3.json","Platformer/Modules/TestModule/cocos/TestModule.csb");
+    entries.push_back(ModuleHolder(i1,TestModule::create));
+    entries.push_back(ModuleHolder(i1,TestModule::create));
+    entries.push_back(ModuleHolder(i1,TestModule::create));
+    entries.push_back(ModuleHolder(i1,TestModule::create));
 
 
 

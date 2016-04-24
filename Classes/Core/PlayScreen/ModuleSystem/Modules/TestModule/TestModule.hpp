@@ -13,7 +13,7 @@ public:
 
 
 
-    virtual bool init(const ModuleInfo &info, B2PhysicsSystem *system, MainCamera *cam, const b2Vec2 &offset) override;
+    virtual bool init(const staticInfo &info, B2PhysicsSystem *system, MainCamera *cam, const b2Vec2 &offset) override;
     virtual void prePhysicsUpdate(float delta) override;
     virtual void postPhysicsUpdate(float delta) override;
 

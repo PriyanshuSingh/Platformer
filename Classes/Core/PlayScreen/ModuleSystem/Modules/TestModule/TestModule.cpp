@@ -11,26 +11,11 @@ USING_NS_CC;
 
 
 
-bool TestModule::init(const PlayModule::ModuleInfo &info, B2PhysicsSystem *system, MainCamera *cam,
+bool TestModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *system, MainCamera *cam,
                       const b2Vec2 &offset) {
     if(!PlayModule::init(info, system, cam, offset)){
         return false;
     }
-    //add static data here
-    //load the rube stuff
-    //load the Csloader stuff:)
-
-
-
-
-    auto back = Sprite::create("groundalpha1.png");
-    back->setAnchorPoint(Vec2::ZERO);
-    this->addChild(back);
-
-
-
-
-
 
 
 

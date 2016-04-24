@@ -15,10 +15,10 @@ public:
 
 private:
 
-    typedef std::function<PlayModule* (const PlayModule::ModuleInfo & info,B2PhysicsSystem *,MainCamera *,const b2Vec2 &)> consFunc;
+    typedef std::function<PlayModule* (const PlayModule::staticInfo & info,B2PhysicsSystem *,MainCamera *,const b2Vec2 &)> consFunc;
     struct ModuleHolder{
-        ModuleHolder(const PlayModule::ModuleInfo & info,const  consFunc & func):info(info),func(func){}
-        PlayModule::ModuleInfo info;
+        ModuleHolder(const PlayModule::staticInfo & info,const  consFunc & func):info(info),func(func){}
+        PlayModule::staticInfo info;
         consFunc func;
 
     };
