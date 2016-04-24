@@ -7,14 +7,13 @@
 #include "../ModuleSystem/PlayModule.hpp"
 #include "../../../rubeStuff/b2dJson.h"
 USING_NS_CC;
-bool PhysicsActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initPosition) {
+bool PhysicsActor::init(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition) {
     if(!Node::init()) {
         return false;
     }
     this->system = system;
-    this->parentModule = parent;
+    this->type = type;
     this->initPosition = initPosition;
-    CCASSERT(parentModule!= nullptr,"parent module null!!");
 
 
     return true;
@@ -25,17 +24,6 @@ void PhysicsActor::onEnter() {
 }
 
 
-void PhysicsActor::update(float delta) {
-    Node::update(delta);
-    if(!system->hasUpdated()){
-        prePhysicsUpdate(delta);
-    }
-    else{
-        postPhysicsUpdate(delta);
-    }
-
-
-}
 
 
 
@@ -50,9 +38,9 @@ cocos2d::Vec2 PhysicsActor::box2DToActorParentSpace(const b2Vec2 bPos) const {
 }
 
 
-TestActor *TestActor::create(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initPosition) {
+TestActor *TestActor::create(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
     auto tActor = new(std::nothrow)TestActor();
-    if(tActor && tActor->init(system,parent,initPosition)){
+    if(tActor && tActor->init(system,initPosition)){
         tActor->autorelease();
         return tActor;
     }
@@ -60,13 +48,11 @@ TestActor *TestActor::create(B2PhysicsSystem *system,PlayModule * parent,const b
     return nullptr;
 }
 
-bool TestActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & initPosition) {
-    if(!PhysicsActor::init(system,parent,initPosition)){
+bool TestActor::init(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
+    if(!PhysicsActor::init(system,ActorType::Interactive,initPosition)){
         return false;
     }
 
-
-    type = ActorType::Void;
     {
         b2BodyDef testBodyDef;
         testBodyDef.type = b2_dynamicBody;
@@ -75,8 +61,7 @@ bool TestActor::init(B2PhysicsSystem *system,PlayModule * parent,const b2Vec2 & 
         p.SetAsBox(0.5, 0.5);
         bod = system->getWorld()->CreateBody(&testBodyDef);
 
-
-        bod->SetTransform(b2Vec2(8,0.5), 0);
+        bod->SetTransform(b2Vec2(8.5,0.5), 0);
         bod->CreateFixture(&p, 1.0f);
         system->addOffset(bod, initPosition);
 
@@ -147,9 +132,9 @@ TestActor::~TestActor() {
 //Test Actor 2
 
 
-TestActor2 *TestActor2::create(B2PhysicsSystem *system, PlayModule *parent, const b2Vec2 &initPosition) {
+TestActor2 *TestActor2::create(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
     auto tActor2 = new(std::nothrow)TestActor2();
-    if(tActor2 && tActor2->init(system,parent,initPosition)){
+    if(tActor2 && tActor2->init(system,initPosition)){
         tActor2->autorelease();
         return tActor2;
     }
@@ -157,14 +142,14 @@ TestActor2 *TestActor2::create(B2PhysicsSystem *system, PlayModule *parent, cons
     return nullptr;
 }
 
-bool TestActor2::init(B2PhysicsSystem *system, PlayModule *parent, const b2Vec2 &initPosition) {
-    if(!PhysicsActor::init(system, parent, initPosition)){
+bool TestActor2::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
+    if(!PhysicsActor::init(system,ActorType ::Interactive,initPosition)){
         return false;
     }
     b2dJson json;
     std::string errMsg;
     std::string jsonContent = FileUtils::getInstance()->getStringFromFile("platformer/rubeScenes/test.json");
-    json.readFromString(jsonContent, errMsg,system->getWorld());
+    json.readFromString(jsonContent,errMsg,system->getWorld());
 
 #ifdef DEBUGGING_APP
 
@@ -176,27 +161,29 @@ bool TestActor2::init(B2PhysicsSystem *system, PlayModule *parent, const b2Vec2 
     }
 #endif
 
-    mainBody = json.getBodyByName("MainBody");
-    circleBody = json.getBodyByName("CircleBody");
+    {
+        mainBody = json.getBodyByName("MainBody");
+        circleBody = json.getBodyByName("CircleBody");
+        joint = json.getJointByName("joint0");
 
 
+        mainBody->SetUserData(this);
+        circleBody->SetUserData(this);
+        joint->SetUserData(this);
 
+        system->addOffset(mainBody, initPosition);
+        system->addOffset(circleBody, initPosition);
+        system->addOffset(joint, initPosition);
 
-    system->addOffset(mainBody,initPosition);
-    system->addOffset(circleBody,initPosition);
+    }
 
-
-
-    circleSprite = Sprite::create("CircleBtn.png");
-    boxSprite = Sprite::create("HelloWorld.png");
-    boxSprite->setAnchorPoint(Vec2::ZERO);
-    addChild(boxSprite);
-    addChild(circleSprite);
-
-
-
-
-
+    {
+        circleSprite = Sprite::create("HelloWorld.png");
+        boxSprite = Sprite::create("HelloWorld.png");
+        boxSprite->setAnchorPoint(Vec2::ZERO);
+        addChild(boxSprite);
+        addChild(circleSprite);
+    }
 
 
 
@@ -207,7 +194,11 @@ bool TestActor2::init(B2PhysicsSystem *system, PlayModule *parent, const b2Vec2 
 void TestActor2::onEnter() {
     PhysicsActor::onEnter();
 
-    box2DToActorParentSpace(mainBody->GetPosition());
+    setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
+    setRotation(AngleBToC(mainBody->GetAngle()));
+
+    circleSprite->setPosition(box2DToActorSpace(circleBody->GetPosition()));
+    circleSprite->setRotation(AngleBToC(circleBody->GetAngle()));
 
 
 
@@ -215,6 +206,12 @@ void TestActor2::onEnter() {
 
 TestActor2::~TestActor2() {
 
+
+    if(system->isSystemActive()){
+        system->getWorld()->DestroyJoint(joint);
+        system->getWorld()->DestroyBody(mainBody);
+        system->getWorld()->DestroyBody(circleBody);
+    }
 }
 
 cocos2d::Vec2 TestActor2::getDeltaMovement() {
@@ -226,11 +223,11 @@ void TestActor2::postPhysicsUpdate(float delta) {
 
 
 
-    this->setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
-    this->setRotation(AngleBToC(mainBody->GetAngle()));
+    setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
+    setRotation(AngleBToC(mainBody->GetAngle()));
 
-    circleSprite->setPosition(box2DToActorSpace(circleBody->GetPosition()));
     circleSprite->setRotation(AngleBToC(circleBody->GetAngle()));
+
 
 }
 

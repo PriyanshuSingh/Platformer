@@ -81,6 +81,7 @@ bool ModuleContainer::init(B2PhysicsSystem *system,MainCamera * cam) {
 
 
 
+
     return true;
 }
 
@@ -170,6 +171,7 @@ void ModuleContainer::switchCurrentModule() {
 
         //move camera back
         cam->setPositionX(current->convertToNodeSpace(cam->getPosition()).x);
+
 
         //move yourself back
         current->setPosition(Vec2::ZERO);

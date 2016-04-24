@@ -16,12 +16,19 @@ bool TestModule::init(const PlayModule::ModuleInfo &info, B2PhysicsSystem *syste
     if(!PlayModule::init(info, system, cam, offset)){
         return false;
     }
+    //add static data here
+    //load the rube stuff
+    //load the Csloader stuff:)
 
 
 
 
+    auto back = Sprite::create("groundalpha1.png");
+    back->setAnchorPoint(Vec2::ZERO);
+    this->addChild(back);
 
-    PlatformerGlobals::printVec2("the offset is ",BtoC(boxInitOffset));
+
+
 
 
 
@@ -30,9 +37,32 @@ bool TestModule::init(const PlayModule::ModuleInfo &info, B2PhysicsSystem *syste
     return true;
 }
 
+void TestModule::onCoordsStable() {
+    PlayModule::onCoordsStable();
+
+#ifdef DEBUGGING_APP
+    cocos2d::log("on coords stable");
+#endif
+
+
+    newActor = TestActor::create(system,boxInitOffset+b2Vec2(6,10));
+    this->addChild(newActor);
+
+
+    actor2 = TestActor2::create(system,boxInitOffset+b2Vec2(6,10));
+    this->addChild(actor2);
+
+
+
+}
 
 void TestModule::prePhysicsUpdate(float delta) {
     PlayModule::prePhysicsUpdate(delta);
+
+    newActor->prePhysicsUpdate(delta);
+    actor2->prePhysicsUpdate(delta);
+
+
 }
 
 void TestModule::postPhysicsUpdate(float delta) {
@@ -42,27 +72,12 @@ void TestModule::postPhysicsUpdate(float delta) {
 
 
 
-        newActor->update(delta);
-        actor2->update(delta);
-}
-
-
-void TestModule::onCoordsStable() {
-    PlayModule::onCoordsStable();
-
-
-    cocos2d::log("on coords stable");
-
-
-
-    newActor = TestActor::create(system,this,boxInitOffset+b2Vec2(2,2));
-    this->addChild(newActor);
-
-
-    actor2 = TestActor2::create(system,this,boxInitOffset+b2Vec2(2,2));
-    this->addChild(actor2);
+        newActor->postPhysicsUpdate(delta);
+        actor2->postPhysicsUpdate(delta);
 
 
 
 }
+
+
 

@@ -26,9 +26,7 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
         adjustOffset = Director::getInstance()->getWinSize().width*0.1f;
         this->cam = cam;
         this->system = system;
-
-        boxInitOffset = offset;
-
+        this->boxInitOffset = offset;
     }
     // Find out the absolute path for the file
     std::string path = FileUtils::getInstance()->fullPathForFilename(info.rubeInfo.c_str());
@@ -72,11 +70,15 @@ bool PlayModule::init(const ModuleInfo & info,B2PhysicsSystem * system,MainCamer
 
 
 
-    //TODO remove any body from directly being added to a module(use PhysicsActors)
-
     //add bodies here only for debugging when they don't need any visual representation
     //shift bodies ahead(In Rube they were made relative to world Origin).
     addOffsetBodiesAndJoints(offset);
+
+
+    //load corresponding sprites and stuff from Csloader
+    {
+
+    }
 
 
     //non-physics stuff

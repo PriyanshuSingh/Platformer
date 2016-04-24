@@ -12,8 +12,6 @@
 
 #define DEBUGGING_APP
 
-
-
 #define ADD_CHILD_MASK(__PARENT__) \
 virtual void addChild(cocos2d::Node *child) override {\
     __PARENT__::addChild(child);                   \
@@ -33,6 +31,7 @@ virtual void addChild(cocos2d::Node *child, int localZOrder, const std::string &
 
 
 
+
 namespace cocos2d {
     class Node;
     class DrawNode;
@@ -40,7 +39,6 @@ namespace cocos2d {
     class Vec3;
     class Mat4;
 }
-
 
 b2Vec2 CtoB(const cocos2d::Vec2 & cocosVec);
 cocos2d::Vec2 BtoC(const  b2Vec2 & bVec);

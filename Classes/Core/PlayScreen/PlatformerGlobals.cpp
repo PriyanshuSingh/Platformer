@@ -7,8 +7,17 @@
 
 #include "PlatformerGlobals.hpp"
 #include "cocos2d.h"
+
 USING_NS_CC;
+
 const std::string PlatformerGlobals::MainPlayerName = "MainPlayer";
+
+
+
+
+
+
+
 
 
 b2Vec2 CtoB(const cocos2d::Vec2 &cocosVec) {

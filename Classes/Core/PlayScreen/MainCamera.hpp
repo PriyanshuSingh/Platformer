@@ -46,14 +46,18 @@ public:
 
     cocos2d::Vec2 getStart2dPosition();
 
+
+//TODO make setPosition and its overloads private
+//and make module container friend of this class
 private:
     cocos2d::BillBoard * blackBoard = nullptr;
     cocos2d::Vec3 defaultPos;
     cocos2d::Vec3 maxPos;
     cocos2d::Vec3 minPos;
+    cocos2d::Vec3 prevPos;
 
 
-
+    cocos2d::Sprite * backGround = nullptr;
 };
 
 
