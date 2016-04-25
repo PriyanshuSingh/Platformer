@@ -14,7 +14,7 @@ void ModuleEntries::initVector() {
     initDone = true;
 
     typedef PlayModule::staticInfo inf;
-    inf i1("Platformer/Modules/TestModule/box/scene3.json","Platformer/Modules/TestModule/cocos/TestModule.csb");
+    inf i1("Platformer/Modules/TestModule/Static/Box2D/scene3.json","Platformer/Modules/TestModule/Static/Cocos/TestModule.csb");
     entries.push_back(ModuleHolder(i1,TestModule::create));
     entries.push_back(ModuleHolder(i1,TestModule::create));
     entries.push_back(ModuleHolder(i1,TestModule::create));

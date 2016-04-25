@@ -12,12 +12,12 @@
 #include "PlayerCommand.hpp"
 
 USING_NS_CC;
-Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system) {
+Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition) {
 
 
 
     auto player = new (std::nothrow) Player();
-    if (player && player->init(container,system))
+    if (player && player->init(container,system,initPosition))
     {
         player->autorelease();
     }
@@ -29,74 +29,25 @@ Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system) {
 
 }
 
-bool Player::init(ModuleContainer * container,B2PhysicsSystem *system) {
-    if(!Node::init()){
+bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition) {
+    auto json = system->addJsonObject("Platformer/Player/player.json");
+    if(!PhysicsActor::init(system,ActorType::Player,initPosition,json)){
         return false;
     }
+    setTag(PhysicsActor::MainPlayerTag);
 
+    //properties
     {
-
-        this->system = system;
         this->container = container;
-        this->dead = false;
-        setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-        setName(PlatformerGlobals::MainPlayerName);
-
+        dead = false;
+//        setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     }
-
-    system->addJsonObject("Platformer/Player/player.json");
-
-    std::string fileName("Platformer/Player/player.json");
-
-    // Find out the absolute path for the file
-    std::string fullpath = FileUtils::getInstance()->fullPathForFilename(fileName.c_str());
-
-
-    // This will print out the actual location on disk that the file is read from.
-    // When using the simulator, exporting your RUBE scene to this folder means
-    // you can edit the scene and reload it without needing to restart the app.
-#ifdef DEBUGGING_APP
-    CCLOG("Full path is: %s", fullpath.c_str());
-#endif
-    //If something
-    // goes wrong, m_world will remain NULL and errMsg will contain some info
-    // about what happened.
-    b2dJson json;
-    std::string errMsg;
-    std::string jsonContent = FileUtils::getInstance()->getStringFromFile(fullpath);
-    json.readFromString(jsonContent, errMsg,system->getWorld());
-
-
-#ifdef DEBUGGING_APP
-
-    if(errMsg.empty()){
-        cocos2d::log("no error occured json loaded ok");
-    }
-    else{
-        cocos2d::log("Error occured : %s",errMsg.c_str());
-    }
-#endif
 
     //main body
     {
 
-        playerInfo.rubeInfo = jsonContent;
         mainBody = json.getBodyByName("MainBody");
-
         CCASSERT(mainBody, "Bounding Body does not exist");
-        mainBody->SetUserData(this);
-
-
-
-
-
-
-
-        saveState();
-
-        //TODO very imp for you to reset the user data back to player
-        playerInfo.mainBody = json.b2j(mainBody);
-        //save joint info and stuff here
 
     }
     //fixtures
@@ -106,38 +57,12 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system) {
 
     }
 
-    mainBody->SetTransform(b2Vec2(10,10),0);
-
-
-
-    prevPosition = mainBody->GetPosition();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     return true;
 }
 
 void Player::prePhysicsUpdate(float delta) {
 
 
-    if(!dead){
-
-
-
-    }
     //execute commands
     for(auto & p:controllers){
         auto com = p->getCommand();
@@ -158,15 +83,18 @@ void Player::postPhysicsUpdate(float delta) {
     }
 
 
-    //TODO discuss to put this in pre or post
 
 
 
     //TODO this approach wont work with slow motion effects
     //The Displacement approach gets fucked up when the world origin
-    //shifts.What To DO?Decision Pending..
+    //shifts.What To DO?Decision Pending..=>Use cocos2d-x getWorldPosition for displacement
+
+//    auto currentPos = _parent->convertToWorldSpace(getPosition());
+//    playerDeltaMovement = currentPos-prevPosition;
+//    prevPosition = currentPos;
+
     playerDeltaMovement = system->box2DToScreen(delta*mainBody->GetLinearVelocity());
-    prevPosition=mainBody->GetPosition();
 
 
     //setup player state vars
@@ -189,14 +117,11 @@ void Player::postPhysicsUpdate(float delta) {
 }
 
 
+void Player::onEnter() {
+    PhysicsActor::onEnter();
 
-
-
-Player::~Player() {
-
-
-    //TODO see if destroy stuff here
 }
+
 
 void Player::setParent(cocos2d::Node *parent) {
     Node::setParent(parent);
@@ -214,15 +139,8 @@ void Player::setParent(cocos2d::Node *parent) {
 
 }
 
-void Player::syncPositionWithPhysics() {
-
-    //just set the sprites position to physics bodies position
-
-}
-
 
 cocos2d::Vec2 Player::getDeltaMovement() {
-
 
     return playerDeltaMovement;
 }
@@ -250,46 +168,32 @@ void Player::removeController(PlayerController *controller) {
     }
 }
 
-void Player::saveState() {
-
-}
-
 
 
 void Player::bringToLife(const b2Vec2 &pos,float degrees) {
 
 
 
-    b2dJson json;
-    std::string errorInfo;
-    json.readFromString(playerInfo.rubeInfo,errorInfo,system->getWorld());
+    auto json = system->addJsonObject("Platformer/Player/player.json");
 
-    if(errorInfo.empty()){
-        cocos2d::log("no error occured AGAIN json loaded ok");
-    }
-    else{
-        cocos2d::log("Error occured AGAIN : %s",errorInfo.c_str());
-    }
+    setupPhysicsObjects(pos,true);
+
+
     mainBody = json.getBodyByName("MainBody");
-    mainBody->SetUserData(this);
     groundFixture = json.getFixtureByName("FootFixture");
-
-    mainBody->SetTransform(pos,-1*CC_DEGREES_TO_RADIANS(degrees));
-
-    this->dead = false;
+    mainBody->SetTransform(pos,AngleBToC(degrees));
+    dead = false;
 
 }
 
 void Player::killMe() {
 
 
-    cocos2d::log("position is %f %f",system->box2DToScreen(mainBody->GetPosition().x),system->box2DToScreen(mainBody->GetPosition().y));
-    //TODO destroy joints before here
-    system->getWorld()->DestroyBody(mainBody);
+    deleteAllBodiesAndJoints();
     //nullify pointers
     mainBody = nullptr;
     groundFixture = nullptr;
-    this->dead = true;
+    dead = true;
 
 
 

@@ -54,9 +54,6 @@ public:
     static void printMat4RowOrder(const std::string & prefix,const cocos2d::Mat4 & mat);
 
 public:
-    const static std::string MainPlayerName;
-
-
 };
 
 

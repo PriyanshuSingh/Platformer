@@ -7,10 +7,14 @@
 
 #include "../../PlayModule.hpp"
 #include "../../../Physics/PhysicsActor.hpp"
+#include "Blocker.hpp"
+
 class TestModule:public PlayModule {
 public:
-    CREATE_MODULE(TestModule);
+    CREATE_MODULE(TestModule)
 
+    virtual void BeginContact(b2Contact *contact) override;
+    virtual void EndContact(b2Contact *contact) override;
 
 
     virtual bool init(const staticInfo &info, B2PhysicsSystem *system, MainCamera *cam, const b2Vec2 &offset) override;
@@ -25,9 +29,11 @@ protected:
 
 private:
 
-    TestActor * actor = nullptr;
-    TestActor *newActor = nullptr;
-    TestActor2 * actor2 = nullptr;
+    PhysicsActor * actor = nullptr;
+    PhysicsActor *newActor = nullptr;
+    PhysicsActor * actor2 = nullptr;
+    Blocker * blocker = nullptr;
+
 };
 
 

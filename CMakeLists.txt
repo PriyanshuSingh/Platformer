@@ -156,7 +156,10 @@ set(GAME_SRC
   Classes/Core/PlayScreen/ModuleSystem/ModuleEntries.cpp
 
   #modules
-  Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.cpp
+        #TestModule
+        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.cpp
+        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/Blocker.cpp
+
 
   ${PLATFORM_SPECIFIC_SRC}
 )
@@ -193,7 +196,8 @@ set(GAME_HEADERS
 
 
         #modules
-        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.hpp
+          Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.hpp
+          Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/Blocker.hpp
   ${PLATFORM_SPECIFIC_HEADERS}
 )
 

@@ -15,7 +15,8 @@ class GameManager;
 
 
 
-
+//TODO add support for loading stuff
+//TODO per module based
 class LoadingScreen :public cocos2d::Layer{
 private:
 

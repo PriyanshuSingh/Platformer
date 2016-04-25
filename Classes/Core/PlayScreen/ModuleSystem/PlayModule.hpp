@@ -60,7 +60,7 @@ public:
     virtual ~PlayModule();
 
     std::vector<b2Body*> & getAddedBodies();
-    std::vector<b2Joint*>& getAddedJoints();
+
 
     float getPlayerPositionPercentage();
 
@@ -107,7 +107,7 @@ protected:
     B2PhysicsSystem * system = nullptr;
     //vector of bodies and joints
     std::vector<b2Body*> bodies;
-    std::vector<b2Joint*> joints;
+
 
 //TODO adjust the value of this guy in last module Accordingly
 //so that the module ends before hitting the corner of game :) and you can play
@@ -128,7 +128,7 @@ protected:
 
 
 
-    void addOffsetBodiesAndJoints(const b2Vec2 &offset);
+    void initBodies(const b2Vec2 &offset);
 
 
 

@@ -40,7 +40,7 @@ bool ModuleContainer::init(B2PhysicsSystem *system,MainCamera * cam) {
 
         this->system = system;
         this->cam = cam;
-        this->mainPlayer = Player::create(this,system);
+        this->mainPlayer = Player::create(this,system,b2Vec2(3,10));
         this->mainPlayer->retain();
     }
 

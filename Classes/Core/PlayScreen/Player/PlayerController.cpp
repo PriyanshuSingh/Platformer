@@ -64,7 +64,7 @@ bool InputController::init(Player *target) {
     killer->retain();
 
 
-    liver = AliveCommand::create(target,b2Vec2(10.000040, 0.039395),0);
+    liver = AliveCommand::create(target,b2Vec2(10, 6),0);
     liver->retain();
 
     auto eventKeyboard = EventListenerKeyboard::create();

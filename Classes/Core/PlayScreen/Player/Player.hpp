@@ -6,9 +6,8 @@
 #define MYGAME_PLAYER_HPP
 
 
-#include "Box2D/Box2D.h"
-#include "cocos2d.h"
-#include "../../../rubeStuff/b2dJson.h"
+#include "../Physics/PhysicsActor.hpp"
+
 class b2Body;
 class B2PhysicsSystem;
 class ModuleContainer;
@@ -17,7 +16,7 @@ class PlayerController;
 class PlayerCommand;
 
 
-class Player: public cocos2d::Node{
+class Player: public PhysicsActor{
 
     friend class JumpCommand;
     friend class MoveCommand;
@@ -26,56 +25,8 @@ class Player: public cocos2d::Node{
 
 public:
     //creation deletion methods
-    static Player * create(ModuleContainer * container,B2PhysicsSystem * system);
-    bool init(ModuleContainer * container,B2PhysicsSystem *system);
-
-    //TODO check constraints like player velocity here
-    void prePhysicsUpdate(float delta);
-    //TODO update cocos2d-x data(setPosition and stuff here)
-    void postPhysicsUpdate(float delta);
-
-    //TODO replace with commands
-
-
-
-
-
-
-    //TODO think design of these methods
-    //useful when the module wants to change player behaviour
-    void clearPhysicsStuff();
-    void initPhysicsInfo();
-
-
-    //TODO bodies deletion
-    virtual ~Player();
-
-
-
-    virtual void setParent(cocos2d::Node * parent)override;
-
-    //TODO
-    //add identification for collision callbacks
-    //also use the
-    //add interface for grabbing,walking/running,Climbing
-    //player states
-
-
-
-
-//TODO add priority based controllers here
-
-
-
-//TODO implement this method!!!!!!!!!!!
-//for syncing sprites with physics bodies
-    void syncPositionWithPhysics();
-//distance moved in one logical physics step
-    cocos2d::Vec2 getDeltaMovement();
-
-
-
-
+    static Player * create(ModuleContainer * container,B2PhysicsSystem * system,const b2Vec2 & initPosition);
+    bool init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition);
 
     bool isGrounded(){return grounded;}
     bool isAttached(){return attached;}
@@ -84,6 +35,30 @@ public:
 
 
 
+//TODO stuff
+
+//replace with commands
+//think design of these methods
+//useful when the module wants to change player behaviour
+    void clearPhysicsStuff(){}
+    void initPhysicsInfo(){}
+
+//TODO
+//add interface for grabbing,walking/running,Climbing
+//player states
+
+
+
+
+//Node overrides
+    virtual void setParent(cocos2d::Node * parent)override;
+
+
+//Physics Actor overrides
+    cocos2d::Vec2 getDeltaMovement()override ;
+    void prePhysicsUpdate(float delta)override;
+    void postPhysicsUpdate(float delta)override;
+    virtual void onEnter() override;
 
     void addController(PlayerController * controller);
     void removeController(PlayerController * controller);
@@ -95,27 +70,15 @@ private:
     cocos2d::Vec2 playerDeltaMovement;
     bool grounded;
     bool attached;
-
     std::vector<PlayerController *> controllers;
 
 
 
 
 
-//save player body info
-    struct PlayerInfo {
-        std::string rubeInfo;
-        Json::Value mainBody;
-
-    };
-
-    PlayerInfo playerInfo;
-
 //required stuff
 private:
 
-    //weak reference to physics system
-    B2PhysicsSystem * system = nullptr;
     //weak reference to module currently in
     PlayModule * parentModule = nullptr;
     //weak reference to Module
@@ -132,11 +95,9 @@ private:
 
 private:
     using cocos2d::Node::setAnchorPoint;
-    void saveState();
     void killMe();
     void bringToLife(const b2Vec2 &pos,float degrees);
-
-    b2Vec2 prevPosition;
+    cocos2d::Vec2 prevPosition;
 };
 
 

@@ -10,9 +10,6 @@
 
 USING_NS_CC;
 
-const std::string PlatformerGlobals::MainPlayerName = "MainPlayer";
-
-
 
 
 

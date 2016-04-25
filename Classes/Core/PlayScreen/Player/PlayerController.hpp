@@ -14,7 +14,6 @@ class Player;
 class PlayerCommand;
 
 
-//relying on cocos2d-x memory management
 class PlayerController{
 public:
 
