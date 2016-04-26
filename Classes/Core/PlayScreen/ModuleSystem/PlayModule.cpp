@@ -36,9 +36,11 @@ bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamer
     {
         //update bounding box size based on the Box2D body
         setContentSize(Size(system->box2DToScreen(boundingBody->GetPosition())));
-
-
         json.getAllBodies(bodies);
+        for(auto & b: bodies){
+            //TODO decide nullptr or this
+            b->SetUserData(nullptr);
+        }
 #ifdef DEBUGGING_APP
         std::vector<b2Joint*>joints;
         json.getAllJoints(joints);

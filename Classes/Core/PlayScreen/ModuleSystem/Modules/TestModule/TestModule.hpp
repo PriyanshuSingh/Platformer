@@ -29,11 +29,11 @@ protected:
 
 private:
 
-    PhysicsActor * actor = nullptr;
     PhysicsActor *newActor = nullptr;
     PhysicsActor * actor2 = nullptr;
     Blocker * blocker = nullptr;
 
+    float switcher = 1;
 };
 
 

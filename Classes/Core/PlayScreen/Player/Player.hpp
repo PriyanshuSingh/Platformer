@@ -27,6 +27,8 @@ public:
     //creation deletion methods
     static Player * create(ModuleContainer * container,B2PhysicsSystem * system,const b2Vec2 & initPosition);
     bool init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition);
+    //TODO add reinit method for death control
+    //bool reinit(){calls parent init with keep body acitve }
 
     bool isGrounded(){return grounded;}
     bool isAttached(){return attached;}
@@ -64,19 +66,25 @@ public:
     void removeController(PlayerController * controller);
 
 
-//player state
 private:
-    //player displacement since last update
+    //player state
     cocos2d::Vec2 playerDeltaMovement;
-    bool grounded;
-    bool attached;
+    bool grounded = false;
+    bool attached = false;
+    cocos2d::Vec2 prevPosition;
+    bool dead = false;
+    //player physics components
+    b2Body *mainBody = nullptr;
+    b2Fixture * groundFixture = nullptr;
+
+
     std::vector<PlayerController *> controllers;
 
 
 
 
 
-//required stuff
+//Non state vars
 private:
 
     //weak reference to module currently in
@@ -84,20 +92,15 @@ private:
     //weak reference to Module
     ModuleContainer * container = nullptr;
 
-    //player physics components
-    b2Body *mainBody = nullptr;
-    b2Fixture * groundFixture = nullptr;
-
-
-    bool dead = false;
 
 
 
+//Methods
 private:
     using cocos2d::Node::setAnchorPoint;
     void killMe();
-    void bringToLife(const b2Vec2 &pos,float degrees);
-    cocos2d::Vec2 prevPosition;
+    void bringToLife(const b2Vec2 &pos);
+
 };
 
 

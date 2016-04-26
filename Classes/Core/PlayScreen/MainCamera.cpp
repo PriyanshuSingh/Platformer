@@ -31,13 +31,12 @@ bool MainCamera::init() {
 
     defaultPos = getPosition3D();
 
-
     backGround = Sprite::create("background.jpg");
+    backGround->setOpacity(64);
     this->addChild(backGround);
     auto winSize = Director::getInstance()->getWinSize();
     backGround->setAnchorPoint(Vec2(0,0));
     backGround->setPosition3D(Vec3(-winSize.width/2,-winSize.height/2,-getPositionZ()));
-
 
     return true;
 }

@@ -6,6 +6,7 @@
 #define MYGAME_PLAYERCOMMAND_HPP
 
 
+#include <rubeStuff/b2dJson.h>
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 
@@ -75,7 +76,7 @@ public:
 private:
     bool right = false;
     float minSpeed = 0.5f;
-    float maxSpeed = 2.52f;
+    float maxSpeed = 1.52f;
     float increment = 0.5f;
 
     float myContribution = 0.0f;
@@ -115,5 +116,6 @@ private:
     b2Vec2 pos;
     float degrees;
 };
+
 
 #endif //MYGAME_PLAYERCOMMAND_HPP

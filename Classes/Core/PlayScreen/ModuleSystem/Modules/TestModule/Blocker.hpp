@@ -26,9 +26,10 @@ public:
     virtual void postPhysicsUpdate(float delta) override;
 
 
-    void setAnyThingInside(b2Fixture * fix){
+    void setAnyThingInside(b2Fixture * fix,bool value){
         if(fix == sensorFix){
-            anyThingInside = !anyThingInside;
+            numThingsInside = value?(numThingsInside+1):(numThingsInside-1);
+
         }
     }
 private:
@@ -39,8 +40,7 @@ private:
 
     b2Fixture * sensorFix = nullptr;
     b2Body * blocker = nullptr;
-    bool anyThingInside = false;
-
+    size_t numThingsInside = 0;
 
     b2Vec2 startPosition;
 };

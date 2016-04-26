@@ -57,19 +57,35 @@ void PhysicsActor::deleteAllBodiesAndJoints() {
 }
 
 
-bool PhysicsActor::init(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints) {
+void PhysicsActor::fillBodyAndJoints(b2dJson & json) {
 
-    this->joints = joints;
-    this->bodies = bodies;
-    return commonInit(system,type,initPosition);
-}
+    bodies.clear();
+    joints.clear();
 
-bool PhysicsActor::init(B2PhysicsSystem *system, const PhysicsActor::ActorType &type, const b2Vec2 &initPosition,b2dJson &json) {
     json.getAllBodies(bodies);
     json.getAllJoints(joints);
-    return commonInit(system,type,initPosition);
 }
-bool PhysicsActor::commonInit(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition){
+
+void PhysicsActor::fillBodyAndJoints(const PhysicsActor::bVec &bodies, const PhysicsActor::jVec &joints) {
+    this->bodies = bodies;
+    this->joints = joints;
+}
+
+
+bool PhysicsActor::init(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints,bool active) {
+
+
+    fillBodyAndJoints(bodies,joints);
+    return commonInit(system,type,initPosition,active);
+}
+
+bool PhysicsActor::init(B2PhysicsSystem *system, const PhysicsActor::ActorType &type, const b2Vec2 &initPosition,b2dJson &json,bool active) {
+    fillBodyAndJoints(json);
+    return commonInit(system,type,initPosition,active);
+}
+
+
+bool PhysicsActor::commonInit(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,bool active){
 
 
     if(!Node::init()) {
@@ -82,7 +98,7 @@ bool PhysicsActor::commonInit(B2PhysicsSystem *system,const ActorType & type,con
     this->system = system;
     this->type = type;
 
-    setupPhysicsObjects(initPosition,false);
+    setupPhysicsObjects(initPosition,active);
     return true;
 
 
@@ -117,6 +133,14 @@ cocos2d::Vec2 PhysicsActor::box2DToActorParentSpace(const b2Vec2 bPos) const {
     return _parent->convertToNodeSpace(system->box2DToScreen(bPos));
 }
 
+void PhysicsActor::setGravityScale(float scale) {
+
+    for(auto &b:bodies){
+        b->SetGravityScale(scale);
+    }
+}
+
+
 TestActor *TestActor::create(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
     auto tActor = new(std::nothrow)TestActor();
     if(tActor && tActor->init(system,initPosition)){
@@ -133,14 +157,18 @@ bool TestActor::init(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
         b2BodyDef testBodyDef;
         testBodyDef.type = b2_dynamicBody;
 
+
         b2PolygonShape p;
         p.SetAsBox(0.8f/2,0.8f/2);
         bod = system->getWorld()->CreateBody(&testBodyDef);
 
+        bod->SetSleepingAllowed(false);
         b2FixtureDef fixDef;
         fixDef.shape = &p;
+        fixDef.restitution = 0.3f;
         fixDef.density= 5/0.64f;
-        fixDef.friction = 0.01;
+        fixDef.friction = 0.2f;
+
         bod->CreateFixture(&fixDef);
 
 
@@ -151,8 +179,8 @@ bool TestActor::init(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
         return false;
     }
 
-    sprite = Sprite::create("HelloWorld.png");
-    sprite->setAnchorPoint(Vec2::ZERO);
+    sprite = Sprite::create("BoxTest.png");
+    sprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     addChild(sprite);
 
 

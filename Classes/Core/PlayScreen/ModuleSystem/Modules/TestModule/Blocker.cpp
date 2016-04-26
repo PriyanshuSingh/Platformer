@@ -49,9 +49,6 @@ bool Blocker::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
 void Blocker::onEnter() {
     PhysicsActor::onEnter();
 
-//    blocker->SetActive(true);
-//    sensorFix->GetBody()->SetActive(true);
-
 
 
 
@@ -66,7 +63,7 @@ void Blocker::prePhysicsUpdate(float delta) {
 
     b2Vec2 vel = blocker->GetLinearVelocity();
     b2Vec2 position = blocker->GetPosition();
-    if(anyThingInside){
+    if(numThingsInside>0){
         vel.y = (position.y-startPosition.y >= maxDisplacement)?0:maxDisplacement/timeToUp;
     }
     else{

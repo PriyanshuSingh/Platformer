@@ -79,7 +79,7 @@ void JumpCommand::execute() {
     //and apply impulse in the reverse direction of it
     //This Allows for jump to work even when gravity reversed.
     //for realistic jump use 1.8 here
-    b2Vec2 impulse(0,sqrtf(20*5.8f));
+    b2Vec2 impulse(0,sqrtf(20*1.8f));
     impulse*=body->GetMass();
 
     body->ApplyLinearImpulse(impulse,body->GetWorldCenter(),true);
@@ -272,7 +272,7 @@ void AliveCommand::execute() {
     if(!target->dead)
         return;
 
-    target->bringToLife(pos,degrees);
+    target->bringToLife(pos);
 }
 
 

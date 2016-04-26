@@ -39,8 +39,8 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
     //properties
     {
         this->container = container;
-        dead = false;
-//        setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+
+        setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     }
 
     //main body
@@ -78,7 +78,7 @@ void Player::postPhysicsUpdate(float delta) {
 
     if(dead){
 
-        playerDeltaMovement = Vec2(0,0);
+        playerDeltaMovement = Vec2::ZERO;
         return;
     }
 
@@ -96,7 +96,6 @@ void Player::postPhysicsUpdate(float delta) {
 
     playerDeltaMovement = system->box2DToScreen(delta*mainBody->GetLinearVelocity());
 
-
     //setup player state vars
 
     grounded = false;
@@ -104,7 +103,14 @@ void Player::postPhysicsUpdate(float delta) {
         auto fixA = edge->contact->GetFixtureA();
         auto fixB = edge->contact->GetFixtureB();
 
-        if(fixA == groundFixture || fixB == groundFixture){
+        if(fixA == groundFixture && !fixB->IsSensor()){
+            if(edge->contact->IsTouching()){
+                grounded = true;
+                break;
+            }
+        }
+
+        if(fixB == groundFixture && !fixA->IsSensor()){
             if(edge->contact->IsTouching()){
                 grounded = true;
                 break;
@@ -170,18 +176,22 @@ void Player::removeController(PlayerController *controller) {
 
 
 
-void Player::bringToLife(const b2Vec2 &pos,float degrees) {
+void Player::bringToLife(const b2Vec2 &pos) {
 
 
 
     auto json = system->addJsonObject("Platformer/Player/player.json");
 
+    //TODO replace this stuff with reinit
+    fillBodyAndJoints(json);
     setupPhysicsObjects(pos,true);
+
 
 
     mainBody = json.getBodyByName("MainBody");
     groundFixture = json.getFixtureByName("FootFixture");
-    mainBody->SetTransform(pos,AngleBToC(degrees));
+    mainBody->SetTransform(pos,0);
+
     dead = false;
 
 }
@@ -190,10 +200,18 @@ void Player::killMe() {
 
 
     deleteAllBodiesAndJoints();
+
+
+
+    playerDeltaMovement= Vec2::ZERO;
+    grounded = attached = false;
+    prevPosition = Vec2::ZERO;
+
+    dead = true;
+
     //nullify pointers
     mainBody = nullptr;
     groundFixture = nullptr;
-    dead = true;
 
 
 

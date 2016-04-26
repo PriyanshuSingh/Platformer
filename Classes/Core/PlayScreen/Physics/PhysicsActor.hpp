@@ -57,7 +57,6 @@ public:
 
 
 
-    //TODO resort back to prephysics and post Physics pattern :(
     virtual void prePhysicsUpdate(float delta){}
     virtual void postPhysicsUpdate(float delta){}
 
@@ -68,8 +67,7 @@ public:
     //default behaviour is to set gravity scale
     //on each body but you can override this
     //if you are interested in particular bodies Only
-//    virtual void setGravityScale(float scale);
-
+    virtual void setGravityScale(float scale);
 
 protected:
 
@@ -81,8 +79,8 @@ protected:
 
 
 
-    bool init(B2PhysicsSystem * system,const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints);
-    bool init(B2PhysicsSystem * system,const ActorType & type,const b2Vec2 & initPosition,b2dJson & json);
+    bool init(B2PhysicsSystem * system,const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints,bool active = false);
+    bool init(B2PhysicsSystem * system,const ActorType & type,const b2Vec2 & initPosition,b2dJson & json,bool active = false);
 
     //by default sets user data of all the bodies and joints == this
     virtual void setUserData();
@@ -96,9 +94,11 @@ protected:
 
 
 
-private:
-    bool commonInit(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition);
+    void fillBodyAndJoints(b2dJson & json);
+    void fillBodyAndJoints(const bVec & bodies,const jVec & joints);
 
+private:
+    bool commonInit(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,bool active);
     bVec bodies;
     jVec joints;
 
