@@ -208,8 +208,12 @@ cocos2d::Vec2 TestActor::getDeltaMovement() {
 void TestActor::postPhysicsUpdate(float delta) {
 
 
-    this->setPosition(box2DToActorParentSpace(bod->GetPosition()));
-    this->setRotation(AngleBToC(bod->GetAngle()));
+    float32 in = system->getInterpolationFactor();
+
+
+    setPosition(box2DToActorParentSpace((1-in)*bod->GetPrevPosition()+(in)*bod->GetPosition()));
+    setRotation(AngleBToC((1-in)*bod->GetPrevAngle()+(in)*bod->GetAngle()));
+
 
 
 
@@ -276,6 +280,10 @@ bool TestActor2::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
 void TestActor2::onEnter() {
     PhysicsActor::onEnter();
 
+
+
+    mainBody->ApplyAngularImpulse(CC_DEGREES_TO_RADIANS(300),true);
+//OLD CODE
 //    mainBody->SetActive(true);
 //    circleBody->SetActive(true);
 
@@ -300,6 +308,8 @@ void TestActor2::postPhysicsUpdate(float delta) {
 
     setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
     setRotation(AngleBToC(mainBody->GetAngle()));
+
+
     circleSprite->setRotation(AngleBToC(circleBody->GetAngle()));
 
 

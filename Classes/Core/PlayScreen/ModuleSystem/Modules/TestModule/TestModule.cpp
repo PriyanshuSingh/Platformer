@@ -4,6 +4,7 @@
 
 #include "../../../PlatformerGlobals.hpp"
 #include "TestModule.hpp"
+#include "../../../Physics/b2PhysicsSystem.hpp"
 
 
 
@@ -27,9 +28,20 @@ bool TestModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *syste
 
                     switcher *=-1;
                     break;
+                case EventKeyboard::KeyCode::KEY_P:
+                    static bool switcher = true;
+                    if(switcher){
+                        system->pause();
+                    }
+                    else {
+                        system->resume();
+                    }
+                    switcher = !switcher;
+                    break;
                 default:
                     break;
             }
+
 
         }
     };

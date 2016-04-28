@@ -9,10 +9,12 @@
 #include "rubeStuff/b2dJson.h"
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
+#include "../PlatformerGlobals.hpp"
 
+class Impulser;
 class B2PhysicsSystem {
 public:
-
+    friend class Impulser;
 
     b2dJson addJsonObject(const std::string & filename);
 
@@ -20,7 +22,7 @@ public:
     static bool isSystemActive();
 
 
-    B2PhysicsSystem(float32 ptmRatio,const b2Vec2 & gravity,bool interpolate);
+    B2PhysicsSystem(float32 ptmRatio,const b2Vec2 & gravity);
     ~B2PhysicsSystem();
 
 
@@ -29,6 +31,7 @@ public:
     bool hasUpdated(){return updated;}
     b2World* getWorld();
 
+    float32 getInterpolationFactor()const;
 
 
     void addOffset(b2Body * body,const b2Vec2 & offset);
@@ -55,9 +58,6 @@ public:
 
 
 
-
-
-    void interpolation(bool enable);
 
     //makes sure that the simulation updates in fixed
     //discrete time steps only
@@ -101,9 +101,12 @@ public:
         Settings()
         {
 
+            //TODO @TOGETHER research the correct value of this constant
+            maxSteps = 5;
             timeStep = (1/60.0f);
             velocityIterations = 8;
             positionIterations = 3;
+
 
         }
 
@@ -114,14 +117,11 @@ public:
         float32 timeStep;
         int32 velocityIterations;
         int32 positionIterations;
-
-
-
+        int32 maxSteps;
     };
 
 private:
     b2World * phyWorld = nullptr;
-    bool interpolate;
     float32 ptmRatio;
     bool paused;
     bool updated;
@@ -129,8 +129,18 @@ private:
 
     Settings worldSettings;
 
+#ifdef FIXED_TIMESTEP
+    float32 accumulator = 0;
+    float32 interpolationFactor = 0;
+#endif
 
 
+    std::vector<Impulser* >impulsers;
+
+
+
+    void addImpulser(Impulser* i);
+    void removeImpulser(Impulser* i);
 
 
 
@@ -141,6 +151,7 @@ private:
 
 private:
     static bool made;
+    static B2PhysicsSystem * currentInstance;
 
 
 };

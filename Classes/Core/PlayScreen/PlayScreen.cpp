@@ -29,7 +29,7 @@ bool PlayScreen::init() {
         //25 steps = one screen => 16m
         //1024/16 = 64
         float ptmRatio = 64;
-        physicsSystem = new B2PhysicsSystem(ptmRatio, b2Vec2(0,-9.8f), false);
+        physicsSystem = new B2PhysicsSystem(ptmRatio, b2Vec2(0,-9.8f));
 #ifdef DEBUGGING_APP
         debugDraw = new GLESDebugDraw(ptmRatio);
         debugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_centerOfMassBit );

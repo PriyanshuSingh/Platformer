@@ -55,7 +55,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60.0f);
+    director->setAnimationInterval(1.0f / 60);
+
+
+    /*TODO DISCUSSION ADD search paths
+     *References
+     * https://www.codeandweb.com/blog/2015/12/15/animations-and-spritesheets-in-cocos2d-x
+     * http://gamedev.stackexchange.com/questions/90405/cocos2d-x-supporting-multi-resolution-using-density-independent-pixels
+    */
 
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);

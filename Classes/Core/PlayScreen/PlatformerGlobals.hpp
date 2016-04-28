@@ -12,6 +12,9 @@
 
 #define DEBUGGING_APP
 
+#define FIXED_TIMESTEP
+
+
 #define ADD_CHILD_MASK(__PARENT__) \
 virtual void addChild(cocos2d::Node *child) override {\
     __PARENT__::addChild(child);                   \

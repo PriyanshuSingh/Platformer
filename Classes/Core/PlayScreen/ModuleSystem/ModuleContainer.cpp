@@ -264,7 +264,8 @@ void ModuleContainer::loadNextModule() {
 void ModuleContainer::checkIsCurrentSafelyDone(float delta) {
 
     //see if the right most corner is past screen
-
+    //TODO add virtual method to PlayModule
+//    current->isDone();
     auto right = convertToWorldSpace(Vec2(current->getContentSize().width,0));
     auto hold = cam->projectGL(Vec3(right.x,right.y,0));
 
@@ -302,6 +303,7 @@ void ModuleContainer::prePhysicsUpdate(float delta) {
     gameController->prePhysicsUpdate(delta);
     mainPlayer->prePhysicsUpdate(delta);
     current->prePhysicsUpdate(delta);
+
 
 }
 

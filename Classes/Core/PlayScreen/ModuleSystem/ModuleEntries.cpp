@@ -21,7 +21,6 @@ void ModuleEntries::initVector() {
     entries.push_back(ModuleHolder(i1,TestModule::create));
 
 
-
 }
 
 
