@@ -147,7 +147,7 @@ private:
 
     b2Body *mainBody = nullptr;
     b2Body *circleBody = nullptr;
-    b2Joint * joint = nullptr;
+    b2RevoluteJoint * joint = nullptr;
 
 
 };

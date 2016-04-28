@@ -249,7 +249,7 @@ bool TestActor2::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
     //box2d stuff
     mainBody = json.getBodyByName("MainBody");
     circleBody = json.getBodyByName("CircleBody");
-    joint = json.getJointByName("joint0");
+    joint = (b2RevoluteJoint*)json.getJointByName("joint0");
 
 
 
@@ -291,7 +291,8 @@ void TestActor2::onEnter() {
     setRotation(AngleBToC(mainBody->GetAngle()));
 
     circleSprite->setPosition(box2DToActorSpace(circleBody->GetPosition()));
-    circleSprite->setRotation(AngleBToC(circleBody->GetAngle()));
+    circleSprite->setRotation(AngleBToC(joint->GetJointAngle()));
+
 
 
 
@@ -310,7 +311,7 @@ void TestActor2::postPhysicsUpdate(float delta) {
     setRotation(AngleBToC(mainBody->GetAngle()));
 
 
-    circleSprite->setRotation(AngleBToC(circleBody->GetAngle()));
+    circleSprite->setRotation(AngleBToC(joint->GetJointAngle()));
 
 
 }
