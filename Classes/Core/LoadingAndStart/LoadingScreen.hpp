@@ -61,7 +61,7 @@ public:
 
 
 private:
-    void loadData();
+    void loadData(float delta);
     void onDone();
 
 private:

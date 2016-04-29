@@ -85,7 +85,7 @@ bool LoadingScreen::init(GameManager *manager) {
 
 
 
-void LoadingScreen::loadData() {
+void LoadingScreen::loadData(float delta) {
     bool done = loader.step();
     if(done) {
         unschedule(schedule_selector(LoadingScreen::loadData));

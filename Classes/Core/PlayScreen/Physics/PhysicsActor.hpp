@@ -5,7 +5,7 @@
 #ifndef MYGAME_GAMEACTOR_HPP
 #define MYGAME_GAMEACTOR_HPP
 
-#include "rubeStuff/b2dJson.h"
+#include "../../../rubeStuff/b2dJson.h"
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "../PlatformerGlobals.hpp"

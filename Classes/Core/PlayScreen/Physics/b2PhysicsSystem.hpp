@@ -6,7 +6,7 @@
 #define B2PHYSICSSYSTEM_HPP
 
 
-#include "rubeStuff/b2dJson.h"
+#include "../../../rubeStuff/b2dJson.h"
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 #include "../PlatformerGlobals.hpp"
