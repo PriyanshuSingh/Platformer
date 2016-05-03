@@ -308,7 +308,7 @@ void TestActor2::postPhysicsUpdate(float delta) {
 
 
     setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
-    setRotation(AngleBToC(mainBody->GetAngle()));
+//    setRotation(AngleBToC(mainBody->GetAngle()));
 
 
     circleSprite->setRotation(AngleBToC(joint->GetJointAngle()));

@@ -8,6 +8,34 @@
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 #include "../PlatformerGlobals.hpp"
+#include "b2dJson.h"
+#include "b2dJsonImage.h"
+
+
+//
+//  RUBEImageInfo
+//
+//  Holds information about one image in the layer, most importantly
+//  the body it is attached to and its position relative to that body.
+//
+//  When the body is moved by the physics engine, this information is
+//  used to place the image in the correct position to match the physics.
+//  If the body is NULL, the position is relative to 0,0 and angle zero.
+//
+struct RUBEImageInfo {
+
+    cocos2d::Sprite* sprite;      // the image
+    std::string name;               // the file the image was loaded from
+    class b2Body* body;             // the body this image is attached to (can be NULL)
+    float scale;                    // a scale of 1 means the image is 1 physics unit high
+    float aspectScale;              // modify the natural aspect of the image
+    float angle;                    // 'local angle' - relative to the angle of the body
+    cocos2d::Point center;        // 'local center' - relative to the position of the body
+    float opacity;                  // 0 - 1
+    bool flip;                      // horizontal flip
+    int colorTint[4];               // 0 - 255 RGBA values
+
+};
 
 //helper macros
 #define CREATE_MODULE(__TYPE__) \
@@ -107,6 +135,10 @@ protected:
     B2PhysicsSystem * system = nullptr;
     //vector of bodies and joints
     std::vector<b2Body*> bodies;
+    //set of image info
+    std::set<RUBEImageInfo *> m_imageInfos;
+    //Static sprite
+    cocos2d::Sprite *staticSprites;
 
 
 //TODO adjust the value of this guy in last module Accordingly
@@ -126,10 +158,7 @@ protected:
 
     };
 
-
-
     void initBodies(const b2Vec2 &offset);
-
 
 
 
@@ -152,6 +181,11 @@ protected:
 //parent methods made private here
     using cocos2d::Layer::setAnchorPoint;
     b2Vec2 boxInitOffset;
+
+private:
+    void loadImagesFromRube(b2dJson *json);
+    void setImagePositionsFromPhysicsBodies();
+
 };
 
 
