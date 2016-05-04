@@ -2,9 +2,10 @@
 // Created by ashish on 4/18/16.
 //
 
+
 #include "./Modules/TestModule/TestModule.hpp"
 #include "ModuleEntries.hpp"
-#include "TestModule2.hpp"
+#include "./Modules/TestModule2/TestModule2.hpp"
 
 std::vector<ModuleEntries::ModuleHolder> ModuleEntries::entries;
 bool ModuleEntries::initDone = false;
