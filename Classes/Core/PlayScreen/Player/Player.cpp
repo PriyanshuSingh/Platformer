@@ -57,6 +57,7 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
         groundFixture = json.getFixtureByName("FootFixture");
 
     }
+    setupPlayerSprite(&json);
 
     return true;
 }
@@ -120,7 +121,7 @@ void Player::postPhysicsUpdate(float delta) {
 
     }
 
-
+    setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
 }
 
 
@@ -217,4 +218,47 @@ void Player::killMe() {
 
 
 
+}
+//TODO @Priyanshu Player can have multiple layer of images
+void Player::setupPlayerSprite(b2dJson *json) {
+    // fill a vector with all images in the RUBE scene
+    std::vector<b2dJsonImage*> b2dImages;
+    json->getAllImages(b2dImages);
+    // loop through the vector, create Sprites for each image and store them in m_imageInfos
+    b2dJsonImage *img = b2dImages[0];
+
+    CCLOG("Loading image: %s", img->file.c_str());
+
+    // try to load the sprite image, and ignore if it fails
+    playerSprite = Sprite::create(img->file.c_str());
+    if (!playerSprite)
+        return;
+
+    // add the sprite to Static Sprite and set the render order
+    this->addChild(playerSprite);
+    //TODO change this.. very bad hack to get PlayModule::DRAWORDER::PLAYER :(
+    this->reorderChild(playerSprite, 15);
+
+    // these will not change during simulation so we can set them now
+    playerSprite->setFlippedX(img->flip);
+    playerSprite->setColor(Color3B(img->colorTint[0], img->colorTint[1], img->colorTint[2]));
+    playerSprite->setOpacity(img->colorTint[3]);
+    playerSprite->setScale(img->scale*system->getPtmRatio() / playerSprite->getContentSize().height);
+    CCLOG(" scale %f\ncontentSize %f %f",playerSprite->getScale(),playerSprite->getContentSize().height,playerSprite->getContentSize().width);
+    // create an info structure to hold the info for this image (body and position etc)
+
+
+    Point pos = Vec2(img->center.x,img->center.y);
+    float angle = -img->angle;
+
+    //need to rotate image local center by body angle
+    b2Vec2 localPos( pos.x, pos.y );
+    b2Rot rot( mainBody->GetAngle() );
+    localPos = b2Mul(rot, localPos) + mainBody->GetPosition();
+    pos.x = localPos.x;
+    pos.y = localPos.y;
+    angle += -mainBody->GetAngle();
+    playerSprite->setRotation( CC_RADIANS_TO_DEGREES(angle) );
+    Vec2 a = system->box2DToScreen(b2Vec2(pos.x,pos.y));
+    setPosition(a);
 }

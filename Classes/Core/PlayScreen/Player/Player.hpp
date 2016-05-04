@@ -100,6 +100,8 @@ private:
     using cocos2d::Node::setAnchorPoint;
     void killMe();
     void bringToLife(const b2Vec2 &pos);
+    cocos2d::Sprite *playerSprite;
+    void setupPlayerSprite(b2dJson *json);
 
 };
 

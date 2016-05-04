@@ -10,7 +10,7 @@
 #include "Box2D/Common/b2Math.h"
 
 
-#define DEBUGGING_APP
+//#define DEBUGGING_APP
 
 #define FIXED_TIMESTEP
 
