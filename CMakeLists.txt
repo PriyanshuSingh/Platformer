@@ -160,6 +160,7 @@ set(GAME_SRC
         #TestModule
         Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.cpp
         Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/Blocker.cpp
+        Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule2/TestModule2.cpp
 
 
   ${PLATFORM_SPECIFIC_SRC}

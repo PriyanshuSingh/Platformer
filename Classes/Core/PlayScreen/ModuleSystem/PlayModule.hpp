@@ -8,8 +8,8 @@
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 #include "../PlatformerGlobals.hpp"
-#include "b2dJson.h"
-#include "b2dJsonImage.h"
+#include "../../../rubeStuff/b2dJson.h"
+#include "../../../rubeStuff/b2dJsonImage.h"
 
 
 //
