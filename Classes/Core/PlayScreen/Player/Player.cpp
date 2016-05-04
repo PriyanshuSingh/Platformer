@@ -30,7 +30,7 @@ Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system,const
 }
 
 bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition) {
-    auto json = system->addJsonObject("Platformer/Player/player.json");
+    auto json = system->addJsonObject("Player2.json");
     if(!PhysicsActor::init(system,ActorType::Player,initPosition,json)){
         return false;
     }
@@ -50,6 +50,7 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
         CCASSERT(mainBody, "Bounding Body does not exist");
 
     }
+
     //fixtures
     {
 
