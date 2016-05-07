@@ -100,7 +100,7 @@ PlayModule::~PlayModule() {
 
         }
     }
-    cocos2d::log("called play module destructor callback");
+    cocos2d::log("called play module destructor called");
 
 
 
@@ -146,6 +146,10 @@ float PlayModule::getPlayerPositionPercentage() {
 void PlayModule::postPhysicsUpdate(float delta) {
 
 
+
+
+
+//    cocos2d::log("delta movement x is %f",player->getDeltaMovement().x);
 
     cam->move2D(delta,Vec2(player->getDeltaMovement().x,0));
 

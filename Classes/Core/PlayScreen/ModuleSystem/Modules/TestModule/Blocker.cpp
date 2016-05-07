@@ -61,8 +61,8 @@ cocos2d::Vec2 Blocker::getDeltaMovement() {
 void Blocker::prePhysicsUpdate(float delta) {
 
 
-    b2Vec2 vel = blocker->GetLinearVelocity();
-    b2Vec2 position = blocker->GetPosition();
+    auto vel = blocker->GetLinearVelocity();
+    auto position = blocker->GetPosition();
     if(numThingsInside>0){
         vel.y = (position.y-startPosition.y >= maxDisplacement)?0:maxDisplacement/timeToUp;
     }

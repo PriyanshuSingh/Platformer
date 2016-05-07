@@ -2,6 +2,7 @@
 // Created by ashish on 4/18/16.
 //
 
+#include "./Modules/RenderModule/RenderModule.hpp"
 #include "./Modules/TestModule/TestModule.hpp"
 #include "ModuleEntries.hpp"
 
@@ -15,8 +16,10 @@ void ModuleEntries::initVector() {
 
     typedef PlayModule::staticInfo inf;
     inf i1("Platformer/Modules/TestModule/Static/Box2D/scene3.json","Platformer/Modules/TestModule/Static/Cocos/TestModule.csb");
-    entries.push_back(ModuleHolder(i1,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
+
+    entries.push_back(ModuleHolder(i1,RenderModule::create));
+    entries.push_back(ModuleHolder(i1,RenderModule::create));
+
     entries.push_back(ModuleHolder(i1,TestModule::create));
     entries.push_back(ModuleHolder(i1,TestModule::create));
 

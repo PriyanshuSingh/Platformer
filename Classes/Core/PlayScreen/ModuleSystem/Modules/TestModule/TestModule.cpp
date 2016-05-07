@@ -116,6 +116,7 @@ void TestModule::BeginContact(b2Contact *contact) {
 //    cocos2d::log("actor2 is %p",actor2);
 
 
+
     if((actor1!= nullptr)  && (actor1 == static_cast<PhysicsActor*>(blocker))){
 
 
@@ -129,6 +130,7 @@ void TestModule::BeginContact(b2Contact *contact) {
         blocker->setAnyThingInside(fixB,true);
 
     }
+
 }
 
 void TestModule::EndContact(b2Contact *contact) {

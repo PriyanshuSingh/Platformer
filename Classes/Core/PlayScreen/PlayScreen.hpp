@@ -22,7 +22,7 @@ class MainCamera;
 
 class PlayScreen:public cocos2d::Scene {
 public:
-    CREATE_FUNC(PlayScreen);
+    static PlayScreen * create();
     bool init()override;
 
 
@@ -50,7 +50,7 @@ private:
 #ifdef DEBUGGING_APP
 public:
     void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags) override;
-    //TODO make sure this method is not the release it Over writes defualt cocos2d-x order of drawing NODES!!
+    //TODO make sure this method is not in the release it Over writes default cocos2d-x order of drawing NODES!!
     void visit(cocos2d::Renderer* renderer, const cocos2d::Mat4 &parentTransform, uint32_t parentFlags) override;
 
 private:

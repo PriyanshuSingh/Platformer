@@ -47,7 +47,7 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
     {
 
         mainBody = json.getBodyByName("MainBody");
-        CCASSERT(mainBody, "Bounding Body does not exist");
+        CCASSERT(mainBody, "Main Body does not exist");
 
     }
     //fixtures
@@ -56,6 +56,15 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
         groundFixture = json.getFixtureByName("FootFixture");
 
     }
+
+
+    testSprite = Sprite::create("HelloWorld.png");
+    addChild(testSprite);
+
+
+    playerDeltaMovement = Vec2::ZERO;
+
+
 
     return true;
 }
@@ -86,15 +95,7 @@ void Player::postPhysicsUpdate(float delta) {
 
 
 
-    //TODO this approach wont work with slow motion effects
-    //The Displacement approach gets fucked up when the world origin
-    //shifts.What To DO?Decision Pending..=>Use cocos2d-x getWorldPosition for displacement
 
-//    auto currentPos = _parent->convertToWorldSpace(getPosition());
-//    playerDeltaMovement = currentPos-prevPosition;
-//    prevPosition = currentPos;
-
-    playerDeltaMovement = system->box2DToScreen(delta*mainBody->GetLinearVelocity());
 
     //setup player state vars
 
@@ -120,11 +121,53 @@ void Player::postPhysicsUpdate(float delta) {
     }
 
 
+
+
+
+    //for testing only
+        playerDeltaMovement = system->box2DToScreen(delta*mainBody->GetLinearVelocity());
+
+    //TODO this approach wont work with slow motion effects
+    //The Displacement approach gets fucked up when the world origin
+    //shifts.What To DO?=>Use cocos2d-x getWorldPosition for displacement
+
+
+    float32 in = system->getInterpolationFactor();
+//    PlatformerGlobals::printVec2("b2body position is",BtoC(mainBody->GetPosition()));
+
+//interpolation fucks up current Pos
+    setPosition(box2DToActorParentSpace((1-in)*mainBody->GetPrevPosition()+(in)*mainBody->GetPosition()));
+
+//    setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
+
+    //angle is fixed so that is not updated
+
+
+
+//    auto currentPos = _parent->convertToWorldSpace(getPosition());
+//    cocos2d::log("current pos is %f",currentPos.x);
+//    playerDeltaMovement = currentPos-prevPosition;
+//
+//    prevPosition = currentPos;
+
+
+
+
+
+
+
 }
 
 
 void Player::onEnter() {
     PhysicsActor::onEnter();
+    auto in = system->getInterpolationFactor();
+    setPosition(box2DToActorParentSpace((1-in)*mainBody->GetPrevPosition()+(in)*mainBody->GetPosition()));
+
+//    setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
+    prevPosition = _parent->convertToWorldSpace(getPosition());
+    cocos2d::log("prev pos is %f",prevPosition.x);
+
 
 }
 
@@ -193,6 +236,7 @@ void Player::bringToLife(const b2Vec2 &pos) {
     mainBody->SetTransform(pos,0);
 
     dead = false;
+
 
 }
 

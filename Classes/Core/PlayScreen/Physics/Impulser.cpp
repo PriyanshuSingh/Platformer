@@ -5,12 +5,14 @@
 #include "Impulser.hpp"
 #include "b2PhysicsSystem.hpp"
 
-Impulser::Impulser() {
 
+bool Impulser::init() {
 
     system = B2PhysicsSystem::currentInstance;
     system->addImpulser(this);
+    return true;
 }
+
 
 Impulser::~Impulser() {
 

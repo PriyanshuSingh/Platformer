@@ -77,9 +77,11 @@ private:
     b2Body *mainBody = nullptr;
     b2Fixture * groundFixture = nullptr;
 
-
     std::vector<PlayerController *> controllers;
 
+
+    //test variables
+    cocos2d::Sprite * testSprite = nullptr;
 
 
 

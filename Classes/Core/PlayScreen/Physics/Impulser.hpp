@@ -10,7 +10,7 @@ class B2PhysicsSystem;
 class Impulser{
 
 public:
-    Impulser();
+    bool init();
     ~Impulser();
     virtual void updateImpulse()=0;
 

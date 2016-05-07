@@ -157,7 +157,7 @@ void B2PhysicsSystem::update(float deltaTime) {
     accumulator+=deltaTime;
 
 
-//TODO  TOGETHER take care if simulation paused
+//TODO @TOGETHER take care if simulation paused
 
 
     if(paused){
@@ -193,6 +193,7 @@ void B2PhysicsSystem::update(float deltaTime) {
 
     for (int i = 0; i < nStepsClamped; ++i)
     {
+
         if(i == nStepsClamped-1){
             auto list = phyWorld->GetBodyList();
             for(auto bod = list;bod;bod = bod->GetNext()){
@@ -221,31 +222,8 @@ void B2PhysicsSystem::update(float deltaTime) {
 
 
     interpolationFactor =  accumulatorRatio;
-//#ifdef  DEBUGGING_APP
-//    int execCount  = 0;
-//#endif
-//    while(accumulator >= worldSettings.timeStep){
-//
-//        phyWorld->Step(worldSettings.timeStep, worldSettings.velocityIterations, worldSettings.positionIterations);
-//        accumulator -= worldSettings.timeStep;
-//        simulated = true;
-//
-//#ifdef  DEBUGGING_APP
-//        execCount++;
-//#endif
-//
-//    }
-//    if(simulated)
-//        phyWorld->ClearForces();
-//
-//#ifdef  DEBUGGING_APP
-//    cocos2d::log("exec count is %d",execCount);
-//#endif
 
 
-
-    //TODO may be add interpolation??
-    //TODO interpolation in last two time steps of world only
 
 
 

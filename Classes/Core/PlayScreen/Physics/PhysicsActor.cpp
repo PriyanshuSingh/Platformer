@@ -183,8 +183,6 @@ bool TestActor::init(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
     sprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     addChild(sprite);
 
-
-
     return true;
 
 
@@ -282,10 +280,15 @@ void TestActor2::onEnter() {
 
 
 
-    mainBody->ApplyAngularImpulse(CC_DEGREES_TO_RADIANS(300),true);
+//    mainBody->ApplyAngularImpulse(CC_DEGREES_TO_RADIANS(300),true);
 //OLD CODE
 //    mainBody->SetActive(true);
 //    circleBody->SetActive(true);
+
+
+
+
+
 
     setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
     setRotation(AngleBToC(mainBody->GetAngle()));

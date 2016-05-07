@@ -21,6 +21,7 @@ public:
     const static int DontCareTag = -1;
     const static int MainPlayerTag = 0;
 
+
     enum class ActorType{
         Player,
         Void,
@@ -36,10 +37,11 @@ public:
 
 
 
-    /*By defualt activates all the bodies
+    /*By default activates all the bodies
      * override this method to use setup initial position of cocos2d-x objects
      * based on Box2d objects as this is called
-     * when added to the "Stage"*/
+     * when added to the "Stage"
+     */
 
     virtual void onEnter() override;
     /*The Destructor deletes all the physics

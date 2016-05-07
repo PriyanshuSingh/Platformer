@@ -12,6 +12,30 @@
 #include "MainCamera.hpp"
 
 USING_NS_CC;
+
+
+PlayScreen *PlayScreen::create() {
+
+    //TODO see this mess
+    //before constructor stuff
+    //setting projection 2d so that the default camera is Orthograghic
+//    Director::getInstance()->setProjection(Director::Projection::_2D);
+    auto pScene  = new(std::nothrow) PlayScreen();
+//    Director::getInstance()->setProjection(Director::Projection::_3D);
+    if (pScene && pScene->init())
+    {
+
+        pScene->autorelease();
+        return pScene;
+    }
+    else
+    {
+        CC_SAFE_DELETE(pScene);
+        return nullptr;
+    }
+}
+
+
 bool PlayScreen::init() {
     if(!Scene::init()){
         return false;
@@ -50,7 +74,7 @@ bool PlayScreen::init() {
             cocos2d::log("in 3d world");
         }
 #endif
-        this->addChild(cam);
+        addChild(cam);
         cam->setCameraFlag(CameraFlag::USER1);
     }
 
@@ -59,8 +83,9 @@ bool PlayScreen::init() {
 
     {
         container = ModuleContainer::create(physicsSystem,cam);
-        this->addChild(container);
+        addChild(container);
     }
+
 
 
 
@@ -71,7 +96,7 @@ bool PlayScreen::init() {
 
     //set camera flag in end after adding all the game stuff
     {
-        this->setCameraMask((unsigned short)CameraFlag::USER1,true);
+        setCameraMask((unsigned short)CameraFlag::USER1,true);
 
     }
 
@@ -80,7 +105,7 @@ bool PlayScreen::init() {
     //default camera stuff here
     {
         uiLayer = GameUiLayer::create();
-        this->addChild(uiLayer);
+        addChild(uiLayer);
 
 
 
@@ -106,10 +131,10 @@ bool PlayScreen::init() {
 #ifdef DEBUGGING_APP
     {
         sprite = Sprite::create("HelloWorld.png");
-        this->addChild(sprite, 10);
+        addChild(sprite, 10);
 
         debugDrawerCocos = DrawNode::create();
-        this->addChild(debugDrawerCocos);
+        addChild(debugDrawerCocos);
 
 
 
@@ -161,6 +186,8 @@ void PlayScreen::update(float delta){
 
 
 
+
+
 }
 
 #ifdef DEBUGGING_APP
@@ -188,6 +215,8 @@ void PlayScreen::draw(Renderer *renderer, const cocos2d::Mat4 &transform, uint32
 
 
     modelViewMV = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+
+
 
     customCommand.init(_globalZOrder);
     customCommand.func = CC_CALLBACK_0(PlayScreen::onDraw, this);
@@ -225,16 +254,38 @@ void PlayScreen::visit(Renderer* renderer, const Mat4 &parentTransform, uint32_t
     _director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     _director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
 
+
+
+
     bool visibleByCamera = isVisitableByVisitingCamera();
 
 
     if(!_children.empty())
     {
         sortAllChildren();
-        // draw children zOrder < 0
+        // draw all the children
         for(int i = 0; i < _children.size(); ++i )
         {
             auto node = _children.at(i);
+
+            if(node->getName() == "renderSprite"){
+                auto sp = (Sprite*)node;
+
+
+
+                if(Camera::getDefaultCamera() == Camera::getVisitingCamera()){
+                    cocos2d::log("default visit");
+                }
+
+
+                cocos2d::log("its there");
+                PlatformerGlobals::printVec2("size is ",sp->getContentSize());
+
+
+                PlatformerGlobals::printVec2("global pos is",convertToWorldSpace(node->getPosition()));
+                cocos2d::log("position is %f %f",node->getPosition().x,node->getPosition().y);
+
+            }
 
             if (node )
                 node->visit(renderer, _modelViewTransform, flags);
@@ -251,6 +302,9 @@ void PlayScreen::visit(Renderer* renderer, const Mat4 &parentTransform, uint32_t
     {
         this->draw(renderer, _modelViewTransform, flags);
     }
+
+
+
 
     _director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 
