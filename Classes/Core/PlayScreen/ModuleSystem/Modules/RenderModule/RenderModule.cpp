@@ -18,6 +18,7 @@ void RenderModule::onEnter() {
 
 
 
+    cocos2d::log("here to");
 
 
 
@@ -49,6 +50,12 @@ bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *sys
     renderSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
     renderSprite->setFlippedY(true);
     renderSprite->setName("renderSprite");
+    if(this->getCameraMask() == (unsigned short)CameraFlag::DEFAULT){
+        cocos2d::log("fucked hard by this logic");
+    }
+    if(_running){
+        cocos2d::log("i am running");
+    }
     addChild(renderSprite);
 
     renderSprite->setOpacity(64);
@@ -94,22 +101,19 @@ void RenderModule::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &paren
         renderSprite->visit(renderer,Mat4::IDENTITY, 0);
 
     }
-    else{
+    else {
 
         if (!_visible) {
             return;
         }
 
 
-
         canvas->beginWithClear(0.0f, 0.0f, 0.0f, 0.0f);
-
 
 
         _director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
         _director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
 
-        bool visibleByCamera = isVisitableByVisitingCamera();
 
         int i = 0;
 
@@ -123,34 +127,18 @@ void RenderModule::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &paren
             for (; i < _children.size(); i++) {
                 auto node = _children.at(i);
 
-                if (node && node->getLocalZOrder() < 0) {
-                    if (node != renderSprite)
-                        node->visit(renderer, _modelViewTransform, flags);
-                }
-                else
-                    break;
-            }
-            // self draw
-            if (visibleByCamera)
-                this->draw(renderer, _modelViewTransform, flags);
-
-            for (auto it = _children.cbegin() + i; it != _children.cend(); ++it) {
-                if (*it != renderSprite)
-                    (*it)->visit(renderer, _modelViewTransform, flags);
+                if (node && node != renderSprite)
+                    node->visit(renderer, _modelViewTransform, flags);
 
             }
-        }
-        else if (visibleByCamera) {
-            this->draw(renderer, _modelViewTransform, flags);
+
+            _director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+            canvas->end();
+
         }
 
-        _director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-        canvas->end();
 
     }
-
-
-
 
 
 }
