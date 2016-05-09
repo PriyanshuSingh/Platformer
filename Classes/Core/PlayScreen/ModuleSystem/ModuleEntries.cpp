@@ -6,6 +6,7 @@
 #include "./Modules/TestModule/TestModule.hpp"
 #include "ModuleEntries.hpp"
 #include "./Modules/TestModule2/TestModule2.hpp"
+#include "./Modules/RenderModule/RenderModule.hpp"
 
 std::vector<ModuleEntries::ModuleHolder> ModuleEntries::entries;
 bool ModuleEntries::initDone = false;
@@ -18,8 +19,10 @@ void ModuleEntries::initVector() {
     typedef PlayModule::staticInfo inf;
     inf i1("Platformer/Modules/TestModule/Static/Box2D/scene3.json","Platformer/Modules/TestModule/Static/Cocos/TestModule.csb");
     inf i2("leveltest2.json","");
-    entries.push_back(ModuleHolder(i2,TestModule2::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
+    entries.push_back(ModuleHolder(i2, RenderModule::create));
+    //entries.push_back(ModuleHolder(i2,TestModule2::create));
+    //entries.push_back(ModuleHolder(i1,TestModule::create));
+
 //    entries.push_back(ModuleHolder(i1,TestModule::create));
 //    entries.push_back(ModuleHolder(i1,TestModule::create));
 

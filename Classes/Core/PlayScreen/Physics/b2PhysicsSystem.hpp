@@ -102,7 +102,7 @@ public:
         {
 
             //TODO @TOGETHER research the correct value of this constant
-            maxSteps = 5;
+            maxSteps = 1;
             timeStep = (1/60.0f);
             velocityIterations = 8;
             positionIterations = 3;

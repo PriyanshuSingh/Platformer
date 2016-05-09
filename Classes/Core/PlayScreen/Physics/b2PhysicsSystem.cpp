@@ -87,7 +87,12 @@ b2World *B2PhysicsSystem::getWorld() {
 
 
 float32 B2PhysicsSystem::getInterpolationFactor() const {
+#ifdef FIXED_TIMESTEP
     return interpolationFactor;
+#else
+    return 1.0f;
+#endif
+
 }
 
 
