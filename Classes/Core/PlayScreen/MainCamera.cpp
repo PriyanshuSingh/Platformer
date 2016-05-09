@@ -25,8 +25,16 @@ MainCamera::~MainCamera() {
 }
 
 bool MainCamera::init() {
-    if(!Camera::initDefault())
+    auto size = Director::getInstance()->getWinSize();
+    float zeye = Director::getInstance()->getZEye();
+
+    if(!initPerspective(60, (GLfloat)size.width / size.height, 10, zeye + size.height / 2.0f)){
         return false;
+    }
+
+    Vec3 eye(size.width/2, size.height/2.0f, zeye), center(size.width/2, size.height/2, 0.0f), up(0.0f, 1.0f, 0.0f);
+    setPosition3D(eye);
+    lookAt(center, up);
 
 
     defaultPos = getPosition3D();

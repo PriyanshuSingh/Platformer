@@ -90,6 +90,10 @@ bool PlayScreen::init() {
 
 
 
+    if(_running){
+        cocos2d::log("i am running scene");
+    }
+
 
 
 
@@ -169,6 +173,16 @@ bool PlayScreen::init() {
 
     return true;
 }
+#ifdef  DEBUGGING_APP
+void PlayScreen::onEnter() {
+    Node::onEnter();
+
+    cocos2d::log("here finally");
+
+}
+
+#endif
+
 
 //game main update loop
 void PlayScreen::update(float delta){

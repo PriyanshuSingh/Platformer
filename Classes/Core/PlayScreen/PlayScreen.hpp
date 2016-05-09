@@ -27,7 +27,9 @@ public:
 
 
 
-
+#ifdef DEBUGGING_APP
+    void onEnter()override;
+#endif
 
     void update(float delta) override;
     virtual ~PlayScreen();
