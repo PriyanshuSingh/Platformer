@@ -14,11 +14,9 @@ void RenderModule::onEnter() {
     //important to do this here(init of the very first module called after which playscreen resets the
     //the camera mask for all children)
 
-    renderSprite->setCameraMask((unsigned short)CameraFlag::DEFAULT);
+//    renderSprite->setCameraMask((unsigned short)CameraFlag::DEFAULT);
 
 
-
-    cocos2d::log("here to");
 
 
 
@@ -50,12 +48,20 @@ bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *sys
     renderSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
     renderSprite->setFlippedY(true);
     renderSprite->setName("renderSprite");
+    //TODO see if this shader added to cache
+    auto vShaderFilename = "Shaders/MatrixShader.vert";
+    auto fileUtils = FileUtils::getInstance();
+    std::string vertexSource = fileUtils->getStringFromFile(FileUtils::getInstance()->fullPathForFilename(vShaderFilename));
+
+    auto renderSpriteGlProgram = GLProgram::createWithByteArrays(vertexSource.c_str(),ccPositionTextureColor_noMVP_frag);
+    renderSprite->setGLProgramState(GLProgramState::getOrCreateWithGLProgram(renderSpriteGlProgram));
     if(this->getCameraMask() == (unsigned short)CameraFlag::DEFAULT){
         cocos2d::log("fucked hard by this logic");
     }
     if(_running){
         cocos2d::log("i am running");
     }
+    //TODO make sure its draw order is as concerned
     addChild(renderSprite);
 
     renderSprite->setOpacity(64);
@@ -94,14 +100,15 @@ void RenderModule::postPhysicsUpdate(float delta) {
 void RenderModule::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &parentTransform, uint32_t parentFlags) {
 
 
-    if(Camera::getDefaultCamera() == Camera::getVisitingCamera()) {
+
+    auto visCam = Camera::getVisitingCamera();
+
+    if(CameraFlag::USER1 == visCam->getCameraFlag()) {
 
 
 
-        renderSprite->visit(renderer,Mat4::IDENTITY, 0);
 
-    }
-    else {
+
 
         if (!_visible) {
             return;
@@ -136,6 +143,19 @@ void RenderModule::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &paren
             canvas->end();
 
         }
+
+
+
+        //draw to sprite
+        auto size = _director->getWinSize();
+        //load orthographic matrix
+        //TODO save this matrix and avoid calculating again
+        Mat4 orthoMatrix;
+        Mat4::createOrthographicOffCenter(0, size.width, 0, size.height, -1024, 1024, &orthoMatrix);
+
+
+        renderSprite->getGLProgramState()->setUniformMat4("mvpMatrix",orthoMatrix);
+        renderSprite->visit(renderer,Mat4::IDENTITY, 0);
 
 
     }
