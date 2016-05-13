@@ -85,14 +85,15 @@ bool DynamicLight::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
     auto s = Director::getInstance()->getWinSize();
     setPosition(Vec2::ZERO);
     auto size = Director::getInstance()->getWinSize();
-    canvas = RenderTexture::create(size.width/2, size.height/2, Texture2D::PixelFormat::RGBA8888);
+    canvas = RenderTexture::create(size.width/4, size.height/4, Texture2D::PixelFormat::RGBA8888);
     canvas->setKeepMatrix(true);
     canvas->retain();
     return true;
 }
 
 DynamicLight *DynamicLight::create(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
-    auto tActor = new(std::nothrow)DynamicLight();
+    auto tActor = new(std::nothrow)
+    DynamicLight();
     if(tActor && tActor->init(system,initPosition)){
         tActor->autorelease();
         return tActor;

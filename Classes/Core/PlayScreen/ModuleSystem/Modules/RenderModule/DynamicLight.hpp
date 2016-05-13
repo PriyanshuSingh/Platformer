@@ -13,7 +13,7 @@ USING_NS_CC;
 
 #define NUMRAYS 1000
 
-class DynamicLight: public PhysicsActor,public b2RayCastCallback {
+class DynamicLight : public PhysicsActor, public b2RayCastCallback {
 
 private:
     bool lightEnable;

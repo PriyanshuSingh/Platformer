@@ -36,7 +36,7 @@ private:
     cocos2d::RenderTexture * canvas = nullptr;
     cocos2d::Sprite * renderSprite = nullptr;
 
-    DynamicLight* lt;
+    DynamicLight * lt;
 
     cocos2d::Sprite * testSprite = nullptr;
 

@@ -41,7 +41,7 @@ bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *sys
     testSprite = Sprite::create("HelloWorld.png");
     testSprite->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
     testSprite->setPosition(size);
-    addChild(testSprite);
+    //addChild(testSprite,-1);
 
 
 
@@ -141,7 +141,7 @@ void RenderModule::onCoordsStable() {
     renderSprite->setCameraMask((unsigned short) CameraFlag::DEFAULT,true);
     renderSprite->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
     renderSprite->setFlippedY(true);
-    renderSprite->setScale(2.0f);
+    renderSprite->setScale(4.0f);
     renderSprite->setPosition(size);
 }
 
@@ -193,11 +193,12 @@ void RenderModule::onEnter() {
     auto glProgram = GLProgram::createWithByteArrays(ccPositionTextureColor_noMVP_vert, frag.c_str());
     //glProgramState->setGLProgram(glProgram);
     auto glProgramState = GLProgramState::getOrCreateWithGLProgram(glProgram);
-    auto ambientColor = Vec4(0.1f, 0.1f, 0.1f, 0.9f);
+    auto ambientColor = Vec4(0.05f, 0.05f, 0.05f, 0.9f);
     glProgramState->setUniformVec4("ambient", ambientColor);
     glProgramState->setUniformVec2("resolution", renderSprite->getTexture()->getContentSizeInPixels());
     glProgramState->setUniformFloat("blurRadius", 8.0f);
     glProgramState->setUniformFloat("sampleNum", 8.0f);
     renderSprite->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
     renderSprite->setGLProgramState(glProgramState);
+    testSprite->setCameraMask((unsigned short) CameraFlag::DEFAULT);
 }

@@ -69,8 +69,8 @@ void TestModule::onCoordsStable() {
     this->addChild(newActor);
 
 
-    actor2 = TestActor2::create(system,boxInitOffset+b2Vec2(13,12));
-    this->addChild(actor2);
+    //actor2 = TestActor2::create(system,boxInitOffset+b2Vec2(13,12));
+    //this->addChild(actor2);
 
 
 
@@ -89,7 +89,7 @@ void TestModule::prePhysicsUpdate(float delta) {
     blocker->setGravityScale(switcher);
 
     newActor->prePhysicsUpdate(delta);
-    actor2->prePhysicsUpdate(delta);
+    //actor2->prePhysicsUpdate(delta);
     blocker->prePhysicsUpdate(delta);
 
 
@@ -99,7 +99,7 @@ void TestModule::postPhysicsUpdate(float delta) {
     PlayModule::postPhysicsUpdate(delta);
 
     newActor->postPhysicsUpdate(delta);
-    actor2->postPhysicsUpdate(delta);
+    //actor2->postPhysicsUpdate(delta);
     blocker->postPhysicsUpdate(delta);
 }
 

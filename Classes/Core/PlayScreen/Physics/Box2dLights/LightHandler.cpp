@@ -1,0 +1,285 @@
+//
+// Created by Priyanshu Singh on 10/05/16.
+//
+
+#include "LightHandler.hpp"
+#include "Light.hpp"
+
+
+using namespace box2dLight;
+
+const float LightHandler::GAMMA_COR = 0.625f;
+bool LightHandler::gammaCorrection = false;
+float LightHandler::gammaCorrectionParameter = 1.0f;
+
+BlendFunc LightHandler::diffuseBlendFunc = {GL_DST_COLOR, GL_ZERO};
+BlendFunc LightHandler::shadowBlend = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
+BlendFunc LightHandler::simpleBlendFunc = {GL_SRC_ALPHA, GL_ONE};
+const char *LightHandler::LIGHTMAP_NAME = "LightMapTag";
+
+void LightHandler::visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) {
+
+    // quick return if not visible. children won't be drawn.
+    if (!_visible)
+    {
+        return;
+    }
+
+    uint32_t flags = processParentFlags(parentTransform, parentFlags);
+
+    // IMPORTANT:
+    // To ease the migration to v3.0, we still support the Mat4 stack,
+    // but it is deprecated and your code should not rely on it
+    _director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    _director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
+
+    bool visibleByCamera = isVisitableByVisitingCamera();
+
+    const Camera *cam = Camera::getVisitingCamera();
+
+
+
+    setScreenCorners(cam);
+
+    int i = 0;
+
+    if(!_children.empty())
+    {
+        sortAllChildren();
+
+        CCASSERT((lightMap != nullptr), "Cannot Render without lightMap");
+
+        // set lightShaders and uniform MVP matrix
+        GLProgramState *glProgramState;
+        if(customLightShader != nullptr){
+            glProgramState = GLProgramState::getOrCreateWithGLProgram(customLightShader);
+        }
+        else {
+            glProgramState = GLProgramState::getOrCreateWithGLProgram(lightShader);
+        }
+        Mat4 u_MVP;
+        Mat4::multiply(cam->getViewProjectionMatrix(), box2dToWorldMat, &u_MVP);
+        glProgramState->setUniformMat4("u_projTrans", u_MVP);
+
+
+        bool useLightMap = (shadows || blur);
+        if(useLightMap){
+            //Render to texture begin
+            lightMap->beginWithClearRenderTexture();
+        }
+
+        Node * lightMapNode = getChildByName(LIGHTMAP_NAME);
+
+        for( ; i < _children.size(); i++ )
+        {
+            auto node = _children.at(i);
+
+            if (node && node->_localZOrder < 0) {
+                if(node != lightMapNode) {
+
+                    if(customLightShader)((Light *)node)->setUniformsForCustomLightShader();
+                    ((Light *)node)->setBlendFunc(simpleBlendFunc);
+                    node->visit(renderer, _modelViewTransform, flags);
+                }else
+                    CCLOG("Light Map is skipped, everything is ok!");
+            }
+            else
+                break;
+        }
+
+        // self draw
+        if (visibleByCamera) {
+            if(useLightMap)lightMap->endRenderTexture();
+            this->draw(renderer, _modelViewTransform, flags);
+            if(useLightMap)lightMap->beginRenderTexture();
+        }
+
+        for(auto it=_children.cbegin()+i; it != _children.cend(); ++it) {
+            if(*it != lightMapNode) {
+                (*it)->setGLProgramState(glProgramState);
+                //This will be light so no need to cast and check
+                ((Light *)*it)->setBlendFunc(simpleBlendFunc);
+                (*it)->visit(renderer, _modelViewTransform, flags);
+            }else{
+                CCLOG("Light Map is skipped, everything is ok!");
+            }
+        }
+
+        if(useLightMap){
+            //Render to texture end
+            lightMap->endRenderTexture();
+
+            bool needed = lightRenderedLastFrame > 0;
+            if(needed && blur){
+                lightMap->gaussianBlur(renderer, _modelViewTransform, flags);
+            }
+        }
+
+        lightMap->visit(renderer, _modelViewTransform, flags);
+
+    }
+    else if (visibleByCamera)
+    {
+        this->draw(renderer, _modelViewTransform, flags);
+    }
+
+    _director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+
+    // FIX ME: Why need to set _orderOfArrival to 0??
+    // Please refer to https://github.com/cocos2d/cocos2d-x/pull/6920
+    // reset for next frame
+    // _orderOfArrival = 0;
+
+}
+
+bool LightHandler::init(b2World *world) {
+
+    if(!Node::init())return false;
+    if(world == nullptr)return false;
+
+    Size size = Director::getInstance()->getWinSize();
+    setLightMap(LightMap::create(this, (int) (size.width/4.0f), (int) (size.height/4.0f)));
+
+    commonInit(world);
+
+    return true;
+}
+
+bool LightHandler::init(b2World *world, int textureHeight, int textureWidth) {
+    if(!Node::init())return false;
+    if(world == nullptr)return false;
+
+    setLightMap(LightMap::create(this,  textureWidth, textureHeight));
+
+    commonInit(world);
+
+}
+
+
+LightHandler *LightHandler::create(b2World *world) {
+
+    LightHandler *ret = new (std::nothrow)LightHandler();
+    if(ret && ret->init(world)){
+        ret->autorelease();
+        return ret;
+    }else{
+        delete(ret);
+        ret = nullptr;
+        return nullptr;
+    }
+}
+
+void LightHandler::addChild(Node *child, int localZOrder, const std::string &name) {
+
+#if COCOS2D_DEBUG >= 1
+    Light *lightChild = dynamic_cast<Light *>(child);
+    LightMap *lightMapChild = dynamic_cast<LightMap *>(child);
+
+    if(!lightChild && !lightMapChild){
+        CCASSERT(false, "LightHandler can have Light or LightMap as Children");
+    }
+
+    if(lightMapChild && lightMapCount >= 1){
+        CCASSERT(false, "LightHandler cannot have more than one LightMap as child");
+    }
+
+    if(lightMapChild){
+        lightMapCount++;
+        CCASSERT(name == LIGHTMAP_NAME, "LightMap tag mismatched. Use static const defined in LightHandler class");
+    }
+
+#endif
+    Node::addChild(child, localZOrder, name);
+}
+
+void LightHandler::addChild(Node *child, int localZOrder, int tag) {
+
+#if COCOS2D_DEBUG >= 1
+    Light *lightChild = dynamic_cast<Light *>(child);
+    LightMap *lightMapChild = dynamic_cast<LightMap *>(child);
+
+    if(!lightChild && !lightMapChild){
+        CCASSERT(false, "LightHandler can have Light or LightMap as Children");
+    }
+    if(lightMapChild)CCASSERT(false, "integer tag for LightMap is not allowed, use string tag instead");
+
+#endif
+    Node::addChild(child, localZOrder, tag);
+}
+
+void LightHandler::addChild(Node *child) {
+    Node::addChild(child);
+}
+
+void LightHandler::addChild(Node *child, int localZOrder) {
+    Node::addChild(child, localZOrder);
+}
+
+
+void LightHandler::resizeRenderTexture(int fboWidth, int fboHeight) {
+    if(lightMap != nullptr){
+        lightMap->resizeRenderTexture(fboWidth, fboHeight);
+    }
+}
+
+void LightHandler::setLightMap(LightMap *lightMap) {
+
+    if(this->lightMap != nullptr){
+        removeChild(this->lightMap, true);
+        lightMapCount--;
+    }
+    this->lightMap = lightMap;
+    if(this->lightMap != nullptr){
+        addChild((Node *)this->lightMap, 1000 , LIGHTMAP_NAME);
+    }
+}
+
+void LightHandler::setBox2dToWorldMat(Mat4 matrix) {
+    box2dToWorldMat = matrix;
+}
+
+Mat4 LightHandler::getBox2dToWorldMat() {
+    return box2dToWorldMat;
+}
+
+
+
+bool LightHandler::intersect(float x, float y, float radius) {
+    return (x1 < (x+radius)) && (x2 > (x - radius)) && (y1 < (y + radius)) && (y2 > (y - radius));
+}
+
+void LightHandler::update(float delta) {
+
+    for(Node *child: getChildren()){
+        child->update(delta);
+    }
+}
+
+
+void LightHandler::setScreenCorners(const Camera *pCamera) {
+    auto size = Director::getInstance()->getWinSize();
+    Vec3 topLeft = pCamera->unproject(Vec3(0, 0, 0));
+    Vec3 bottomRight = pCamera->unproject(Vec3(size.width, size.height, 0));
+
+    Mat4 inv = box2dToWorldMat.getInversed();
+    inv.transformPoint(&topLeft);
+    inv.transformPoint(&bottomRight);
+
+    x1 = topLeft.x;
+    x2 = bottomRight.x;
+    y1 = topLeft.y;
+    y2 = bottomRight.y;
+}
+
+LightHandler::~LightHandler() {
+
+    if(this->lightMap != nullptr){
+        CC_SAFE_RELEASE(this->lightMap);
+    }
+}
+
+void LightHandler::commonInit(b2World *world) {
+    lightShader = GLProgram::createWithFilenames("shaders/lightShader.vert", "shaders/lightShader.frag");
+    CC_SAFE_RETAIN(lightShader);
+    this->world = world;
+}
