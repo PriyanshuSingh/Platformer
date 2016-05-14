@@ -7,13 +7,14 @@
 
 
 #include "Box2D/Box2D.h"
-#include "LightMap.hpp"
 #include "Light.hpp"
 
 
 USING_NS_CC;
 
 namespace box2dLight{
+
+    class LightMap;
 
     class LightHandler : public cocos2d::Node {
 
@@ -26,9 +27,9 @@ namespace box2dLight{
         bool isDiffuse;
 
         Color4F ambientLight;
-        static const BlendFunc diffuseBlendFunc;
-        static const BlendFunc shadowBlend;
-        static const BlendFunc simpleBlendFunc;
+        static BlendFunc diffuseBlendFunc;
+        static BlendFunc shadowBlend;
+        static BlendFunc simpleBlendFunc;
         static const char *LIGHTMAP_NAME;
 
         GLProgram *customLightShader;
@@ -64,9 +65,11 @@ namespace box2dLight{
                          ambientLight(Light::ZeroColor),
                          lightMapCount(0),
                          customLightShader(nullptr),
-                         culling(true),
+                         culling(false),
                          shadows(true),
+
                          blur(true),
+                         isDiffuse(false),
                          blurNum(1),
                          viewPortX(0),
                          viewPortY(0),

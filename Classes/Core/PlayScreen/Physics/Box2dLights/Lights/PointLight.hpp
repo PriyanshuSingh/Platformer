@@ -18,6 +18,8 @@ namespace box2dLight {
         virtual void update(float delta) override;
 
         void setEndPoints();
+
+        static PointLight *create(LightHandler *lightHandler, int rays, Color4F color, float distance, float directionDegree);
     };
 }
 

@@ -8,10 +8,14 @@
 
 #include "../../PlayModule.hpp"
 #include "../../../Physics/PhysicsActor.hpp"
+#include "PointLight.hpp"
 
 class TestModule2: public PlayModule {
 public:
     CREATE_MODULE(TestModule2)
+
+    virtual void onEnter() override;
+
     virtual void BeginContact(b2Contact *contact) override;
     virtual void EndContact(b2Contact *contact) override;
 
@@ -23,6 +27,8 @@ public:
 protected:
     virtual void onCoordsStable() override;
 
+    box2dLight::LightHandler *lightHandler;
+    box2dLight::PointLight *pointLight;
 
 };
 

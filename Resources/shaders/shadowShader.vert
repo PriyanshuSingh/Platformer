@@ -1,16 +1,22 @@
 attribute vec4 a_position;
+attribute vec2 a_texCoord;
 attribute vec4 a_color;
-attribute float a_fraction;
 
 uniform mat4 Proj;
 
 #ifdef GL_ES
 varying lowp vec4 v_fragmentColor;
+varying mediump vec2 v_texCoord;
 #else
 varying vec4 v_fragmentColor;
+varying vec2 v_texCoord;
 #endif
 
-void main(){
+
+
+void main()
+{
     gl_Position = Proj * a_position;
-    v_fragmentColor = a_fraction * a_color;
+    v_fragmentColor = a_color;
+    v_texCoord = a_texCoord;
 }

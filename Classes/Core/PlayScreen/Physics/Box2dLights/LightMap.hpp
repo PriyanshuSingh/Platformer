@@ -5,11 +5,14 @@
 #ifndef PLATFORMER_LIGHTMAP_HPP
 #define PLATFORMER_LIGHTMAP_HPP
 
-#include "LightHandler.hpp"
 
 USING_NS_CC;
 
+
+
 namespace box2dLight {
+
+    class LightHandler;
 
     class LightMap : public cocos2d::Sprite {
 
@@ -37,6 +40,9 @@ namespace box2dLight {
         static const char *ATTRIBUTE_NAME_FRACTION;
         static const char *UNIFORM_NAME_BLUR_AXIS;
         static const char *UNIFORM_NAME_VIEWPROJECTION_MATRIX;
+        static const char *UNIFORM_NAME_WINSIZE;
+        static const char *UNIFORM_NAME_ISDIFFUSE;
+        static const char *UNIFORM_NAME_ISGAMMA;
 
         virtual ~LightMap();
 
@@ -61,6 +67,7 @@ namespace box2dLight {
 
         virtual void beginRenderTexture();
         virtual void endRenderTexture();
+
 
 
     };

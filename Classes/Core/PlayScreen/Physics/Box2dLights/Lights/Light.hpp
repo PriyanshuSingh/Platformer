@@ -31,12 +31,12 @@ namespace box2dLight {
                 y(other.y)
         {}
 
-        inline GVec2 set(const GVec2 &other){
+        inline void set(const GVec2 &other){
             this->x = other.x;
             this->y = other.y;
         }
 
-        inline GVec2 set(const Vec2 &other){
+        inline void set(const Vec2 &other){
             this->x = other.x;
             this->y = other.y;
         }
@@ -158,9 +158,8 @@ namespace box2dLight {
         }
 
         virtual ~Light() {
-            if (raycastPoints != nullptr)CC_SAFE_DELETE(raycastPoints);
             if (raycastFraction != nullptr)CC_SAFE_DELETE(raycastFraction);
-
+            if (raycastPoints != nullptr){delete[] raycastPoints; raycastPoints = nullptr;}
         }
 
 
@@ -241,7 +240,7 @@ namespace box2dLight {
 
         virtual void setUniformsForCustomLightShader();
 
-    private:
+    public:
         static b2Filter globalFilterA;
         b2Filter filterA;
 

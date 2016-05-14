@@ -6,6 +6,10 @@
 #include "LightHandler.hpp"
 
 using namespace box2dLight;
+b2Filter Light::globalFilterA;
+const Color4F Light::DefaultColor = Color4F(1, 1, 1, 1);
+const Color4F Light::ZeroColor = Color4F(0, 0, 0, 0);
+const int Light::MIN_RAYS = 3;
 
 void Light::setColor(Color4F color) {
 
@@ -15,10 +19,16 @@ void Light::setColor(Color4F color) {
 
 float32 Light::ReportFixture(b2Fixture *fixture, const b2Vec2 &point, const b2Vec2 &normal, float32 fraction) {
 
-    if(!globalContactFilter(fixture))return -1;
-    if(!contactFilter(fixture))return -1;
-    if(ignoreBody && fixture->GetBody() == getBody())return -1;
+//    CCLOG("Racast index = %d, %f",m_index, fraction);
+//    CCLOG("Point x = %f , y = %f",point.x, point.y);
 
+//    CCLOG("%d %d %d", globalFilterA.categoryBits,globalFilterA.maskBits,globalFilterA.groupIndex);
+//    if(!globalContactFilter(fixture))return 1;
+//    if(!contactFilter(fixture))return 1;
+//    if(ignoreBody && fixture->GetBody() == getBody())return 1;
+
+
+//    CCLOG("Racast index = %d, %f",m_index, fraction);
     //TODO --NOTE-- implement box2d to World coordinate
     raycastPoints[m_index] = Vec2(point.x, point.y);
     raycastFraction[m_index] = fraction;
@@ -137,7 +147,8 @@ void Light::setRayNum(int rays) {
     raycastFraction = new float[vertexNum];
     raycastPoints = new Vec2[vertexNum];
 
-
+//    CCLOG("%d %d %d %d", sizeof(raycastPoints)/ sizeof(Vec2), vertexNum, sizeof(raycastPoints), sizeof(Vec2));
+//    CCASSERT(false, "sldfjksjf ");
 }
 
 int Light::getRayNum() {

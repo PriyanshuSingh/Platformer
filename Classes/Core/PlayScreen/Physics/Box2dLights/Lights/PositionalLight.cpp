@@ -12,6 +12,7 @@ bool PositionalLight::init(LightHandler *lightHandler, int rays, Color4F color, 
 
     if(!Light::init(lightHandler, rays, color, distance, directionDegree))return false;
 
+    return true;
 }
 
 void PositionalLight::update(float delta) {
@@ -27,7 +28,7 @@ void PositionalLight::update(float delta) {
 
 void PositionalLight::updateBody(float d) {
 
-    if(body != nullptr || staticLight)return;
+    if(body == nullptr || staticLight)return;
 
     //TODO Interpolation not taken into account
     //TODO --NOTE-- implement box2d to World coordinate
@@ -45,6 +46,7 @@ void PositionalLight::updateBody(float d) {
 bool PositionalLight::cull() {
     culled = lightHandler->culling && !lightHandler->intersect(
             start.x, start.y, distance + softShadowLength);
+//    CCLOG("%d this value represent culled",culled);
     return culled;
 }
 
@@ -71,11 +73,12 @@ void PositionalLight::draw(Renderer *renderer, const Mat4 &transform, uint32_t f
 
 void PositionalLight::onDraw(const Mat4 &transform, uint32_t flags) {
 
+//    CCLOG("in onDraw of Positional Light");
     if(lightHandler->culling && culled)
         return;
 
     lightHandler->lightRenderedLastFrame++;
-    glEnable(GL_BLEND);
+
     glBlendFunc(blendFunction.src, blendFunction.dst);
 
     GLProgramState *glProgramState = getGLProgramState();
@@ -84,6 +87,7 @@ void PositionalLight::onDraw(const Mat4 &transform, uint32_t flags) {
     glProgramState->setVertexAttribPointer(GLProgram::ATTRIBUTE_NAME_COLOR, 4, GL_FLOAT, GL_FALSE, 0, &lightColorAttrib[0]);
     glProgramState->setVertexAttribPointer(LightMap::ATTRIBUTE_NAME_FRACTION, 1,  GL_FLOAT, GL_FALSE, 0, &lightFraction[0]);
 
+    glProgramState->apply(transform);
     glDrawArrays(GL_TRIANGLE_FAN, 0, vertexNum);
 
     if(soft && !xray) {
@@ -91,9 +95,10 @@ void PositionalLight::onDraw(const Mat4 &transform, uint32_t flags) {
         glProgramState->setVertexAttribPointer(GLProgram::ATTRIBUTE_NAME_COLOR, 4, GL_FLOAT, GL_FALSE, 0, &softShadowColorAttrib[0]);
         glProgramState->setVertexAttribPointer(LightMap::ATTRIBUTE_NAME_FRACTION, 1, GL_FLOAT, GL_FALSE, 0, &softShadowFraction[0]);
 
+        glProgramState->apply(transform);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, (vertexNum - 1)*2);
     }
-    glDisable(GL_BLEND);
+
 }
 
 void PositionalLight::setMesh() {
@@ -119,11 +124,12 @@ void PositionalLight::setMesh() {
     softShadowFraction.clear();
 
     for(int i=0; i<rayNum; i++){
+        float s = 1.0f - raycastFraction[i];
         softShadowMeshPoints.push_back(GVec2(raycastPoints[i]));
         softShadowColorAttrib.push_back(color);
-        softShadowFraction.push_back(1.0f - raycastFraction[i]);
+        softShadowFraction.push_back(s);
 
-        softShadowMeshPoints.push_back(GVec2(raycastPoints[i]));
+        softShadowMeshPoints.push_back(GVec2(raycastPoints[i].x + s * softShadowLength * cos[i], raycastPoints[i].y + s * softShadowLength * sin[i]));
         softShadowColorAttrib.push_back(ZeroColor);
         softShadowFraction.push_back(0.0f);
     }
@@ -152,7 +158,7 @@ void PositionalLight::attachToBody(b2Body *body) {
 }
 
 void PositionalLight::attachToBody(b2Body *pBody, float bodyOffsetX, float bodyOffsetY, float bodyAngleOffset) {
-    this->body;
+    this->body = pBody;
     bodyOffset = Vec2(bodyOffsetX, bodyOffsetY);
     this->bodyAngleOffset = bodyAngleOffset;
     if(staticLight) dirty = true;
@@ -184,7 +190,7 @@ bool PositionalLight::contains(float x, float y) {
     Vec2 point1;
     for(int i=0; i <= rayNum; point2 = point1, ++i){
         point1 = raycastPoints[i];
-        if(((point1.y < y) && (point2.y >= y)) || (point1.y >= y) && (point2.y < y)){
+        if(((point1.y < y) && (point2.y >= y)) || ((point1.y >= y) && (point2.y < y))){
             if((y - point1.y) / (point2.y - point1.y) * (point2.x - point1.x) < (x - point1.x)) oddNodes = !oddNodes;
         }
     }

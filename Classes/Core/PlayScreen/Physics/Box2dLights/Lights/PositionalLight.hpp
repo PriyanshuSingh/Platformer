@@ -52,7 +52,6 @@ namespace box2dLight {
 
         virtual bool init(LightHandler *lightHandler, int rays, Color4F color, float distance, float directionDegree) override;
 
-
         void attachToBody(b2Body *pBody, float bodyOffsetX, float bodyOffsetY, float bodyAngleOffset);
 
         virtual bool contains(float x, float y) override;

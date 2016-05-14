@@ -92,8 +92,7 @@ bool DynamicLight::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
 }
 
 DynamicLight *DynamicLight::create(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
-    auto tActor = new(std::nothrow)
-    DynamicLight();
+    auto tActor = new(std::nothrow)DynamicLight();
     if(tActor && tActor->init(system,initPosition)){
         tActor->autorelease();
         return tActor;

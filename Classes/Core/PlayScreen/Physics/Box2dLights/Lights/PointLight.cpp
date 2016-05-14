@@ -41,3 +41,15 @@ void box2dLight::PointLight::setEndPoints() {
         end.push_back(Vec2(distance * cos[i], distance * sin[i]));
     }
 }
+
+box2dLight::PointLight *box2dLight::PointLight::create(box2dLight::LightHandler *lightHandler, int rays, Color4F color, float distance, float directionDegree) {
+    PointLight *ret = new (std::nothrow)PointLight();
+    if(ret && ret->init(lightHandler, rays, color, distance, directionDegree)){
+        ret->autorelease();
+        return ret;
+    }else{
+        delete(ret);
+        ret = nullptr;
+        return nullptr;
+    }
+}
