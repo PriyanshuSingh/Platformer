@@ -81,6 +81,7 @@ void LightHandler::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
         lightRenderedLastFrame = 0;
 
         bool useLightMap = ((shadows || blur) && ((lightMap->getCameraMask() & (unsigned short)Camera::getVisitingCamera()->getCameraFlag()) != 0));
+        CCLOG("%d %d",useLightMap, Camera::getVisitingCamera()->getCameraFlag());
         if(useLightMap){
             //Render to texture begin
             lightMap->beginWithClearRenderTexture();
@@ -130,12 +131,15 @@ void LightHandler::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
             lightMap->endRenderTexture();
 
 //            bool needed = lightRenderedLastFrame > 0;
-            if( blur){
+//            if( blur){
+////                lightMap->gaussianBlur(renderer, _modelViewTransform, flags);
 //                lightMap->gaussianBlur(renderer, _modelViewTransform, flags);
-            }
+//            }
         }
 
-        lightMap->visit(renderer, Mat4::IDENTITY, 0);
+//        lightMap->visit(renderer, Mat4::IDENTITY, 0);
+        lightMap->visit(renderer, _modelViewTransform, flags);
+//        lightMap->draw(renderer, _modelViewTransform, flags);
 
     }
     else if (visibleByCamera)
@@ -158,7 +162,7 @@ bool LightHandler::init(b2World *world) {
     if(world == nullptr)return false;
 
     Size size = Director::getInstance()->getWinSize();
-    setLightMap(LightMap::create(this, (int) (size.width/4.0f), (int) (size.height/4.0f)));
+    setLightMap(LightMap::create(this, (int) (size.width/3.5f), (int) (size.height/3.5f)));
 
     commonInit(world);
 
@@ -172,7 +176,7 @@ bool LightHandler::init(b2World *world, int textureHeight, int textureWidth) {
     setLightMap(LightMap::create(this,  textureWidth, textureHeight));
 
     commonInit(world);
-
+    return true;
 }
 
 

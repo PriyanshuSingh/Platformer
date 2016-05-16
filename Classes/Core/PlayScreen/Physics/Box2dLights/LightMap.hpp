@@ -33,8 +33,21 @@ namespace box2dLight {
         Mat4 viewProjectionMatrix;
 
         RenderTexture *mainCanvas;
+        CustomCommand _preBlurCommand;
+        CustomCommand _postBlurCommand;
 
-        void pushTriangleCommand(Renderer *renderer, const Mat4 &transform, uint32_t flags);
+        Sprite *sprite;
+        Texture2D *texture2D;
+
+        TrianglesCommand _blur1,_blur2;
+
+
+        void pushTriangleCommand(Renderer *renderer, const Mat4 &transform, uint32_t flags, TrianglesCommand *cmd);
+
+        void onPreBlurDraw(const Mat4 &transform, uint32_t flags, Sprite **sprite, Texture2D **texture);
+        void onPostBlurDraw(const Mat4 &transform, uint32_t flags);
+
+
     public:
 
         static const char *ATTRIBUTE_NAME_FRACTION;
@@ -65,10 +78,9 @@ namespace box2dLight {
 
         virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
 
+
         virtual void beginRenderTexture();
         virtual void endRenderTexture();
-
-
 
     };
 

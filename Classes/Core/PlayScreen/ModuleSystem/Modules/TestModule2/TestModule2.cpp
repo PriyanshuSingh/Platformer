@@ -39,7 +39,7 @@ void TestModule2::onEnter() {
     Node::onEnter();
     lightHandler = LightHandler::create(system->getWorld());
     auto size = Director::getInstance()->getWinSize();
-    pointLight = box2dLight::PointLight::create(lightHandler, 1000, Color4F(1,1,1,1), 1000.0f/64.0f, 0.0f);
+    pointLight = box2dLight::PointLight::create(lightHandler, 1000, Color4F(1,1,1,1), 500.0f/64.0f, 0.0f);
     pointLight->setStartPosition(size.width/128, size.height/128);
     addChild(lightHandler, 200);
     pointLight->setCameraMask((unsigned short) CameraFlag::USER1);

@@ -65,6 +65,11 @@ void PositionalLight::updateMesh() {
 
 void PositionalLight::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) {
 
+    if(lightHandler->culling && culled)
+        return;
+
+    lightHandler->lightRenderedLastFrame++;
+
     _customCommand.init(_globalZOrder, transform, flags);
     _customCommand.func = CC_CALLBACK_0(PositionalLight::onDraw, this, transform, flags);
     renderer->addCommand(&_customCommand);
@@ -74,10 +79,8 @@ void PositionalLight::draw(Renderer *renderer, const Mat4 &transform, uint32_t f
 void PositionalLight::onDraw(const Mat4 &transform, uint32_t flags) {
 
 //    CCLOG("in onDraw of Positional Light");
-    if(lightHandler->culling && culled)
-        return;
 
-    lightHandler->lightRenderedLastFrame++;
+
 
     glBlendFunc(blendFunction.src, blendFunction.dst);
 

@@ -66,8 +66,7 @@ namespace box2dLight{
                          lightMapCount(0),
                          customLightShader(nullptr),
                          culling(false),
-                         shadows(true),
-
+                         shadows(false),
                          blur(true),
                          isDiffuse(false),
                          blurNum(1),
