@@ -14,9 +14,6 @@ void RenderModule::onEnter() {
     //important to do this here(init of the very first module called after which playscreen resets the
     //the camera mask for all children)
 
-//    renderSprite->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-
-
 
 
 
@@ -30,24 +27,24 @@ bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *sys
     }
 
 
+    const auto & size = _director->getWinSize();
+    //render texture setup
+    {
+        // create a render texture, this is what we are going to draw into
+        canvas = RenderTexture::create(size.width, size.height, Texture2D::PixelFormat::RGBA8888);
+        canvas->setKeepMatrix(true);
+        canvas->retain();
 
 
+        renderSprite = Sprite::createWithTexture(canvas->getSprite()->getTexture());
+        renderSprite->setTextureRect(Rect(0, 0, renderSprite->getTexture()->getContentSize().width,
+                                          renderSprite->getTexture()->getContentSize().height));
+        renderSprite->setPosition(Vec2::ZERO);
+        renderSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
+        renderSprite->setFlippedY(true);
 
-    auto size = Director::getInstance()->getWinSize();
+    }
 
-    // create a render texture, this is what we are going to draw into
-    canvas = RenderTexture::create(size.width, size.height, Texture2D::PixelFormat::RGBA8888);
-    canvas->setKeepMatrix(true);
-    canvas->retain();
-
-
-
-    renderSprite = Sprite::createWithTexture(canvas->getSprite()->getTexture());
-    renderSprite->setTextureRect(Rect(0, 0, renderSprite->getTexture()->getContentSize().width, renderSprite->getTexture()->getContentSize().height));
-    renderSprite->setPosition(Vec2::ZERO);
-    renderSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
-    renderSprite->setFlippedY(true);
-    renderSprite->setName("renderSprite");
     //TODO see if this shader added to cache
     auto vShaderFilename = "Shaders/MatrixShader.vert";
     auto fileUtils = FileUtils::getInstance();
