@@ -11,15 +11,10 @@ void RenderModule::onEnter() {
     Node::onEnter();
 
 
-    //important to do this here(init of the very first module called after which playscreen resets the
-    //the camera mask for all children)
-
 
 
 
 }
-
-
 bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *system, MainCamera *cam,
                         const b2Vec2 &offset) {
     if(!PlayModule::init(info, system, cam, offset)){
@@ -35,39 +30,47 @@ bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *sys
         canvas->setKeepMatrix(true);
         canvas->retain();
 
-
+        //sprite setup
         renderSprite = Sprite::createWithTexture(canvas->getSprite()->getTexture());
-        renderSprite->setTextureRect(Rect(0, 0, renderSprite->getTexture()->getContentSize().width,
-                                          renderSprite->getTexture()->getContentSize().height));
         renderSprite->setPosition(Vec2::ZERO);
         renderSprite->setAnchorPoint(Point::ANCHOR_BOTTOM_LEFT);
         renderSprite->setFlippedY(true);
 
+        addChild(renderSprite);
+        renderSprite->setCameraMask((unsigned short)CameraFlag::USER1);
+
+
+
+        //TODO see if this shader added to cache
+        auto vShaderFilename = "Shaders/MatrixShader.vert";
+        auto fileUtils = FileUtils::getInstance();
+        std::string vertexSource = fileUtils->getStringFromFile(FileUtils::getInstance()->fullPathForFilename(vShaderFilename));
+
+        auto renderSpriteGlProgram = GLProgram::createWithByteArrays(vertexSource.c_str(),ccPositionTextureColor_noMVP_frag);
+        renderSprite->setGLProgramState(GLProgramState::getOrCreateWithGLProgram(renderSpriteGlProgram));
+
+
     }
 
-    //TODO see if this shader added to cache
-    auto vShaderFilename = "Shaders/MatrixShader.vert";
-    auto fileUtils = FileUtils::getInstance();
-    std::string vertexSource = fileUtils->getStringFromFile(FileUtils::getInstance()->fullPathForFilename(vShaderFilename));
 
-    auto renderSpriteGlProgram = GLProgram::createWithByteArrays(vertexSource.c_str(),ccPositionTextureColor_noMVP_frag);
-    renderSprite->setGLProgramState(GLProgramState::getOrCreateWithGLProgram(renderSpriteGlProgram));
-    if(this->getCameraMask() == (unsigned short)CameraFlag::DEFAULT){
-        cocos2d::log("fucked hard by this logic");
+    {
+        testSprite = Sprite::create("HelloWorld.png");
+        testSprite->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+        testSprite->setPosition(Vec2(0, size.height));
+        addChild(testSprite);
+
+
+        //node filter
+        setNodeFilter([this](Node *n) -> bool {
+            return !(n == testSprite);
+
+        });
+
     }
-    if(_running){
-        cocos2d::log("i am running");
-    }
-    //TODO make sure its draw order is as concerned
-    addChild(renderSprite);
-
-    renderSprite->setOpacity(64);
 
 
-    testSprite = Sprite::create("HelloWorld.png");
-    testSprite->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
-    testSprite->setPosition(Vec2(0,size.height));
-    addChild(testSprite);
+
+
 
 
 
@@ -79,6 +82,7 @@ bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *sys
 RenderModule::~RenderModule() {
 
     CC_SAFE_RELEASE(canvas);
+
 }
 
 
@@ -98,66 +102,124 @@ void RenderModule::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &paren
 
 
 
+
+
     auto visCam = Camera::getVisitingCamera();
+    if(visCam->getCameraFlag() == CameraFlag::USER1)
+    {
 
-    if(CameraFlag::USER1 == visCam->getCameraFlag()) {
-
-
-
-
-
-
-        if (!_visible) {
-            return;
-        }
-
-
-        canvas->beginWithClear(0.0f, 0.0f, 0.0f, 0.0f);
-
-
-        _director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
-        _director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
-
-
-        int i = 0;
-
-
-        uint32_t flags = processParentFlags(parentTransform, parentFlags);
-
-        //visit everyone except render sprite
-        if (!_children.empty()) {
-            sortAllChildren();
-            // draw children zOrder < 0
-            for (; i < _children.size(); i++) {
-                auto node = _children.at(i);
-
-                if (node && node != renderSprite)
-                    node->visit(renderer, _modelViewTransform, flags);
-
-            }
-
-            _director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+        //update matrix and make flags
+        uint32_t flags = processParentFlags(parentTransform,parentFlags);
+        std::vector<Node *>leftNodes;
+        //draw stuff into render texture
+        {
+            canvas->beginWithClear(0.0f, 0.0f, 0.0f, 0.0f);
+            internalVisit(renderer, flags, leftNodes);
             canvas->end();
+        }
+        //sprite shader stuff
+        {
+            setupSprite.init(_globalZOrder);
+            setupSprite.func = [this]() {
+                //setup sprite
+                const Size &size = _director->getWinSize();
+                //load orthographic matrix
+                //TODO save this matrix and avoid calculating again
+                Mat4 orthoMatrix;
+                Mat4::createOrthographicOffCenter(0, size.width, 0, size.height, -1024, 1024, &orthoMatrix);
+                renderSprite->getGLProgramState()->setUniformMat4("mvpMatrix", orthoMatrix);
 
+
+            };
+            renderer->addCommand(&setupSprite);
         }
 
+        if(show && renderBefore){
+            renderSprite->visit(renderer, Mat4::IDENTITY, 0);
+        }
+
+        for(size_t i = 0;i<leftNodes.size();++i){
+            leftNodes[i]->visit(renderer,_modelViewTransform,flags);
+
+        }
+        leftNodes.clear();
 
 
-        //draw to sprite
-        auto size = _director->getWinSize();
-        //load orthographic matrix
-        //TODO save this matrix and avoid calculating again
-        Mat4 orthoMatrix;
-        Mat4::createOrthographicOffCenter(0, size.width, 0, size.height, -1024, 1024, &orthoMatrix);
-
-
-        renderSprite->getGLProgramState()->setUniformMat4("mvpMatrix",orthoMatrix);
-        renderSprite->visit(renderer,Mat4::IDENTITY, 0);
-
+        if(show &&!renderBefore){
+            renderSprite->visit(renderer,Mat4::IDENTITY,0);
+        }
 
     }
 
+}
 
+void RenderModule::internalVisit(cocos2d::Renderer *renderer,uint32_t flags,std::vector<Node *> & filteredNodes) {
+
+
+
+
+    if (!_visible)
+    {
+        return;
+    }
+
+
+    _director->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+    _director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);
+
+    bool visibleByCamera = isVisitableByVisitingCamera();
+
+    int i = 0;
+
+    if(!_children.empty()) {
+        sortAllChildren();
+        // draw children zOrder < 0
+        for (; i < _children.size(); i++) {
+            auto node = _children.at(i);
+
+            if (node && node->getLocalZOrder() < 0 && node != renderSprite) {
+                if (filter(node)) {
+                    node->visit(renderer, _modelViewTransform, flags);
+                }
+                else {
+                    filteredNodes.push_back(node);
+                }
+            }
+            else
+                break;
+        }
+        // self draw
+        if (visibleByCamera) {
+            if (filter(this))draw(renderer, _modelViewTransform, flags);
+            else filteredNodes.push_back(this);
+        }
+        for (auto it = _children.cbegin() + i; it != _children.cend(); ++it){
+            if (*it != renderSprite) {
+                if (filter(*it)) {
+                    (*it)->visit(renderer, _modelViewTransform, flags);
+                }
+                else {
+                    filteredNodes.push_back(*it);
+                }
+            }
+        }
+    }
+    else if (visibleByCamera)
+    {
+
+        if (filter(this))draw(renderer, _modelViewTransform, flags);
+        else filteredNodes.push_back(this);
+    }
+
+    _director->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
+
+
+}
+
+
+bool RenderModule::filter(Node *n) {
+
+    return (!filterFunc || filterFunc(n));
 }
 
 
@@ -169,4 +231,20 @@ void RenderModule::onCoordsStable() {
 
 
 }
+
+void RenderModule::setShow(bool val) {
+    show=val;
+}
+
+
+void RenderModule::setRenderBefore(bool should) {
+    renderBefore = should;
+
+}
+
+
+void RenderModule::setNodeFilter(const std::function<bool(cocos2d::Node *)> & filterFunc) {
+    this->filterFunc = filterFunc;
+}
+
 

@@ -164,7 +164,7 @@ set(GAME_SRC
         Classes/Core/PlayScreen/ModuleSystem/Modules/RenderModule/RenderModule.cpp
 
 
-  ${PLATFORM_SPECIFIC_SRC}
+        ${PLATFORM_SPECIFIC_SRC}
 )
 
 set(GAME_HEADERS

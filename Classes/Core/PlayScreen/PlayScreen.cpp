@@ -16,12 +16,7 @@ USING_NS_CC;
 
 PlayScreen *PlayScreen::create() {
 
-    //TODO see this mess
-    //before constructor stuff
-    //setting projection 2d so that the default camera is Orthograghic
-//    Director::getInstance()->setProjection(Director::Projection::_2D);
     auto pScene  = new(std::nothrow) PlayScreen();
-//    Director::getInstance()->setProjection(Director::Projection::_3D);
     if (pScene && pScene->init())
     {
 
@@ -90,18 +85,10 @@ bool PlayScreen::init() {
 
 
 
-    if(_running){
-        cocos2d::log("i am running scene");
-    }
-
-
-
-
 
     //set camera flag in end after adding all the game stuff
     {
         setCameraMask((unsigned short)CameraFlag::USER1,true);
-
     }
 
 
@@ -110,10 +97,6 @@ bool PlayScreen::init() {
     {
         uiLayer = GameUiLayer::create();
         addChild(uiLayer);
-
-
-
-
 
     }
 
@@ -281,25 +264,6 @@ void PlayScreen::visit(Renderer* renderer, const Mat4 &parentTransform, uint32_t
         for(int i = 0; i < _children.size(); ++i )
         {
             auto node = _children.at(i);
-
-            if(node->getName() == "renderSprite"){
-                auto sp = (Sprite*)node;
-
-
-
-                if(Camera::getDefaultCamera() == Camera::getVisitingCamera()){
-                    cocos2d::log("default visit");
-                }
-
-
-                cocos2d::log("its there");
-                PlatformerGlobals::printVec2("size is ",sp->getContentSize());
-
-
-                PlatformerGlobals::printVec2("global pos is",convertToWorldSpace(node->getPosition()));
-                cocos2d::log("position is %f %f",node->getPosition().x,node->getPosition().y);
-
-            }
 
             if (node )
                 node->visit(renderer, _modelViewTransform, flags);

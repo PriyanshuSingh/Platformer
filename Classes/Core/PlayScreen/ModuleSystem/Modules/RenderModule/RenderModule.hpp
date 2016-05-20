@@ -21,6 +21,10 @@ public:
 
     void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &parentTransform,
                        uint32_t parentFlags) override;
+    void setShow(bool val);
+    void setRenderBefore(bool should);
+    void setNodeFilter(const std::function<bool(cocos2d::Node *)> &  filterFunc);
+
 protected:
     void onCoordsStable() override;
 
@@ -28,18 +32,23 @@ protected:
 
 
 private:
-
-
-
-
-
+    void internalVisit(cocos2d::Renderer *renderer,uint32_t parentFlags,std::vector<Node *> & filteredNodes);
+    bool filter(cocos2d::Node * n);
+    cocos2d::CustomCommand setupSprite;
     cocos2d::RenderTexture * canvas = nullptr;
     cocos2d::Sprite * renderSprite = nullptr;
 
+    std::function<bool(cocos2d::Node *)> filterFunc;
 
 
+
+    bool show = true;
+    bool renderBefore = true;
+
+
+
+    //test stuff(TODO delete them later)
     cocos2d::Sprite * testSprite = nullptr;
-
     TestActor *newActor = nullptr;
 
 };
