@@ -6,8 +6,8 @@
 #define PLATFORMER_DYNAMICLIGHT_HPP
 
 
-#include "PhysicsActor.hpp"
-#include "b2PhysicsSystem.hpp"
+#include "../../../Physics/PhysicsActor.hpp"
+#include "../../../Physics/b2PhysicsSystem.hpp"
 
 USING_NS_CC;
 

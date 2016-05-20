@@ -17,9 +17,12 @@ class TestAiController;
 
 class ModuleContainer :public cocos2d::Node {
 public:
-    ADD_CHILD_MASK(cocos2d::Node);
+    ADD_CHILD_MASK(cocos2d::Node)
+
+    virtual void onEnter() override;;
     static ModuleContainer * create(B2PhysicsSystem * system,MainCamera * cam);
     bool init(B2PhysicsSystem * system,MainCamera * cam);
+
     ~ModuleContainer();
 
     CC_DEPRECATED_ATTRIBUTE void move(float xDisplacement,float zoomFactor);
@@ -61,7 +64,7 @@ private:
 
 
 
-    //TODO replace thses with interfaces
+    //TODO replace these with interfaces
     std::vector<std::function<void()> >switchCurrentCallbacks;
 
 

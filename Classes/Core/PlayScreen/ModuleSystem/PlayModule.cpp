@@ -93,6 +93,7 @@ bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamer
     return true;
 }
 void PlayModule::onCoordsStable() {
+    cocos2d::log("on coords stable Play module");
     //zero out offset
     boxInitOffset = b2Vec2();
     boxInitOffset.SetZero();

@@ -86,6 +86,14 @@ bool ModuleContainer::init(B2PhysicsSystem *system,MainCamera * cam) {
 }
 
 
+void ModuleContainer::onEnter() {
+    CCASSERT(current!= nullptr,"Current is null in onEnter");
+    Node::onEnter();
+    current->setCoordinatesStabilized(true);
+
+}
+
+
 ModuleContainer::~ModuleContainer() {
 
 
@@ -170,7 +178,8 @@ void ModuleContainer::switchCurrentModule() {
 
 
         //move camera back
-        cam->setPositionX(current->convertToNodeSpace(cam->getPosition()).x);
+        cam->setPosition(current->convertToNodeSpace(cam->getPosition()));
+
 
 
         //move yourself back
@@ -224,7 +233,9 @@ void ModuleContainer::loadCurrentModule() {
 
     current = ModuleEntries::getNextModule(currentLevel,system,cam,b2Vec2(0.0f,0.0f));
     current->setPosition(Vec2::ZERO);
-    current->setCoordinatesStabilized(true);
+    //set coordinates stabilized is called in OnEnter()to
+    //maintain onEnter called before OnCoordsStable()
+
     //add player
     current->addPlayer(mainPlayer);
 

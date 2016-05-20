@@ -60,10 +60,6 @@ bool TestModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *syste
 void TestModule::onCoordsStable() {
     PlayModule::onCoordsStable();
 
-#ifdef DEBUGGING_APP
-    cocos2d::log("on coords stable");
-#endif
-
 
     newActor = TestActor::create(system,boxInitOffset+b2Vec2(2,10));
     this->addChild(newActor);
@@ -144,10 +140,7 @@ void TestModule::EndContact(b2Contact *contact) {
         return;
     }
     if(actor2!= nullptr && actor2 == (PhysicsActor*)blocker){
-
-
         blocker->setAnyThingInside(fixB,false);
-
     }
 }
 

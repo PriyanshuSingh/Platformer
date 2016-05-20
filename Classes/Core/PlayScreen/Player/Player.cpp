@@ -30,7 +30,9 @@ Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system,const
 }
 
 bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition) {
-    auto json = system->addJsonObject("Player2.json");
+    auto json = system->addJsonObject("Platformer/Player/player.json");
+
+
     if(!PhysicsActor::init(system,ActorType::Player,initPosition,json)){
         return false;
     }
@@ -57,7 +59,7 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
         groundFixture = json.getFixtureByName("FootFixture");
 
     }
-    setupPlayerSprite(&json);
+//    setupPlayerSprite(&json);
 
     return true;
 }

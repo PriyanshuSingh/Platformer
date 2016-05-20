@@ -76,6 +76,14 @@ public:
 
     virtual bool init(const staticInfo & info,B2PhysicsSystem * system,MainCamera * cam,const b2Vec2 & offset);
 
+#ifdef DEBUGGING_APP
+    virtual void onEnter() override{
+            cocos2d::log("on enter play module");
+            cocos2d::Node::onEnter();
+    }
+
+#endif
+
 protected:
     //THIS IS YOUR ACTIVE constructor
     //before this your pre/post physics update are not called,

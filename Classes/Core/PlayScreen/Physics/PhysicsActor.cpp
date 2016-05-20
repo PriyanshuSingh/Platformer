@@ -115,6 +115,9 @@ void PhysicsActor::setupPhysicsObjects(const b2Vec2 & pos,bool active) {
 
 void PhysicsActor::onEnter() {
     Node::onEnter();
+    //TODO activating bodies is expensive,
+    //TODO keep bodies active and pre physics update will be called
+    //only when module active
     setBodiesActive(true);
 }
 
@@ -308,9 +311,7 @@ void TestActor2::postPhysicsUpdate(float delta) {
 
 
     setPosition(box2DToActorParentSpace(mainBody->GetPosition()));
-//    setRotation(AngleBToC(mainBody->GetAngle()));
-
-
+    setRotation(AngleBToC(mainBody->GetAngle()));
     circleSprite->setRotation(AngleBToC(joint->GetJointAngle()));
 
 
