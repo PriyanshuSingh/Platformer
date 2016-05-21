@@ -58,7 +58,7 @@ bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamer
         staticSprites->setPosition(Vec2::ZERO);
         addChild(staticSprites,DRAWORDER::MIDDLEGROUND);
         //load the images and set
-        loadImagesFromRube(&json);
+//        loadImagesFromRube(&json);
 
     }
     //load corresponding sprites and stuff from CS Loader
@@ -97,12 +97,15 @@ void PlayModule::onCoordsStable() {
     //zero out offset
     boxInitOffset = b2Vec2();
     boxInitOffset.SetZero();
+    updater = new ModuleUpdater(this);
 }
 
 PlayModule::~PlayModule() {
 
 
     //TODO delete only bodies because these are pure statics
+
+    CC_SAFE_DELETE(updater);
 
     if(B2PhysicsSystem::isSystemActive()) {
 
@@ -156,7 +159,7 @@ float PlayModule::getPlayerPositionPercentage() {
 }
 
 
-void PlayModule::postPhysicsUpdate(float delta) {
+void PlayModule::postUpdate(float delta) {
 
 
 
@@ -274,3 +277,8 @@ void PlayModule::setImagePositionsFromPhysicsBodies() {
         CCLOG("pos for sprite is %f %f",a.x, a.y );
     }
 }
+
+B2PhysicsSystem * PlayModule::ModuleUpdater::getSystem() {
+    return system;
+}
+

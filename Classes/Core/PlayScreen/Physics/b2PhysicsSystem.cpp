@@ -5,6 +5,8 @@
 #include "b2PhysicsSystem.hpp"
 #include "../PlatformerGlobals.hpp"
 #include "Impulser.hpp"
+#include "PhysicsUpdatable.hpp"
+
 
 
 USING_NS_CC;
@@ -127,6 +129,27 @@ b2Vec2 B2PhysicsSystem::screenToBox2D(const cocos2d::Vec2 &in) {
 }
 
 
+void B2PhysicsSystem::DestroyJoints(const std::vector<b2Joint *> &joints) {
+
+    if(B2PhysicsSystem::made) {
+        for (auto &j :joints) {
+            phyWorld->DestroyJoint(j);
+
+        }
+    }
+}
+
+void B2PhysicsSystem::DestroyBodies(const std::vector<b2Body *> &bodies) {
+
+    if(B2PhysicsSystem::made) {
+        for (auto &b :bodies) {
+            phyWorld->DestroyBody(b);
+
+        }
+    }
+}
+
+
 b2Vec2 B2PhysicsSystem::getB2VisibleOrigin() {
     return screenToBox2D(Director::getInstance()->getVisibleOrigin());
 }
@@ -195,6 +218,12 @@ void B2PhysicsSystem::update(float deltaTime) {
     //avoid spiral of death
     const int nStepsClamped = std::min(nSteps, MAX_STEPS);
     bool simulated = false;
+    if(nStepsClamped>0){
+        for(auto & updatable:updatables){
+            updatable->prePhysicsUpdate(deltaTime);
+        }
+
+    }
 
     for (int i = 0; i < nStepsClamped; ++i)
     {
@@ -219,10 +248,14 @@ void B2PhysicsSystem::update(float deltaTime) {
     }
     //fixed updates in Box2D World
 
-    if(simulated)
+    if(simulated) {
         phyWorld->ClearForces();
 
+        for(auto & updatable:updatables){
+            updatable->postPhysicsUpdate(deltaTime);
+        }
 
+    }
 
 
     interpolationFactor =  accumulatorRatio;
@@ -300,24 +333,56 @@ void B2PhysicsSystem::setSimulationSpeed(float scaleFactor) {
 
 void B2PhysicsSystem::addImpulser(Impulser *i) {
 
-    CCASSERT(std::find(impulsers.begin(),impulsers.end(),i) == impulsers.end(),"Readding a already added impulser");
-    impulsers.push_back(i);
+    if(isSystemActive()) {
 
+        CCASSERT(std::find(impulsers.begin(), impulsers.end(), i) == impulsers.end(),
+                 "Re Adding a already added impulser");
+        impulsers.push_back(i);
+    }
 
 }
 
 void B2PhysicsSystem::removeImpulser(Impulser *i) {
 
-    auto it = std::find(impulsers.begin(), impulsers.end(),i);
+    if(isSystemActive()) {
+        auto it = std::find(impulsers.begin(), impulsers.end(), i);
 
-    CCASSERT(it != impulsers.end(),"Deleting a not added impulser");
+        CCASSERT(it != impulsers.end(), "Deleting a not added impulser");
 
 
-    using std::swap;
-    // swap the one to be removed with the last element
-    swap(*it, impulsers.back());
-    impulsers.pop_back();
+        using std::swap;
+        // swap the one to be removed with the last element
+        swap(*it, impulsers.back());
+        impulsers.pop_back();
+
+    }
+}
+
+
+
+void B2PhysicsSystem::addPhysicsUpdatable(PhysicsUpdatable *pUpdatable) {
+
+    if(B2PhysicsSystem::made) {
+        CCASSERT(std::find(updatables.begin(), updatables.end(), pUpdatable) == updatables.end(), "Re Adding a already added actor");
+        updatables.push_back(pUpdatable);
+
+    }
+}
+
+void B2PhysicsSystem::removePhysicsUpdatable(PhysicsUpdatable *pUpdatable ) {
+    if(B2PhysicsSystem::made) {
+        auto it = std::find(updatables.begin(), updatables.end(), pUpdatable);
+
+        CCASSERT(it != updatables.end(), "Deleting a not added actor");
+            using std::swap;
+    //     swap the one to be removed with the last element
+        swap(*it, updatables.back());
+        updatables.pop_back();
+
+
+    }
 
 
 }
+
 

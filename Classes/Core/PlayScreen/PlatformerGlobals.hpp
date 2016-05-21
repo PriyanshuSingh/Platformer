@@ -12,7 +12,7 @@
 
 #define DEBUGGING_APP
 
-//#define FIXED_TIMESTEP
+#define FIXED_TIMESTEP
 
 
 #define ADD_CHILD_MASK(__PARENT__) \

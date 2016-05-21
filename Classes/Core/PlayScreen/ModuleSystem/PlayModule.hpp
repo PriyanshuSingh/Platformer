@@ -10,6 +10,7 @@
 #include "../PlatformerGlobals.hpp"
 #include "../../../rubeStuff/b2dJson.h"
 #include "../../../rubeStuff/b2dJsonImage.h"
+#include "../Physics/PhysicsUpdatable.hpp"
 
 
 //
@@ -102,9 +103,9 @@ public:
 
 
 //useful methods
-    virtual void prePhysicsUpdate(float delta){};
+    virtual void preUpdate(float delta){};
     //TODO update cocos2d-x data(setPosition and stuff here)
-    virtual void postPhysicsUpdate(float delta);
+    virtual void postUpdate(float delta);
 
 
 //TODO remove this,module self responsible for deleting
@@ -155,6 +156,25 @@ protected:
 
     float adjustOffset;
 protected:
+
+    class ModuleUpdater:public PhysicsUpdatable{
+        public:
+            ModuleUpdater(PlayModule * parentModule):parentModule(parentModule) {
+                //TODO add assertion here
+            }
+            void prePhysicsUpdate(float delta) override {
+                parentModule->preUpdate(delta);
+            }
+            void postPhysicsUpdate(float delta) override {
+                parentModule->postUpdate(delta);
+            }
+
+        B2PhysicsSystem *getSystem();
+
+    private:
+            PlayModule * parentModule = nullptr;
+    };
+    ModuleUpdater * updater = nullptr;
     enum DRAWORDER{
         BACKGROUND = 0,
         //the real World bojects

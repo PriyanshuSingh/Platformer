@@ -11,9 +11,9 @@ USING_NS_CC;
 
 
 
-bool RenderModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *system, MainCamera *cam,
+bool RenderModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * system, MainCamera *cam,
                         const b2Vec2 &offset) {
-    if(!PlayModule::init(info, system, cam, offset)){
+    if(!PlayModule::init(info,system,cam, offset)){
         return false;
     }
 
@@ -55,15 +55,15 @@ RenderModule::~RenderModule() {
 }
 
 
-void RenderModule::prePhysicsUpdate(float delta) {
+void RenderModule::preUpdate(float delta) {
     //cocos2d::log("here render module");
-    PlayModule::prePhysicsUpdate(delta);
+    PlayModule::preUpdate(delta);
     lt->prePhysicsUpdate(delta);
     renderSprite->setTexture(lt->getRenderSprite()->getTexture());
 }
 
-void RenderModule::postPhysicsUpdate(float delta) {
-    PlayModule::postPhysicsUpdate(delta);
+void RenderModule::postUpdate(float delta) {
+    PlayModule::postUpdate(delta);
 }
 
 /*

@@ -7,6 +7,7 @@
 
 #include "cocos2d.h"
 #include "../PlatformerGlobals.hpp"
+#include "../Physics/PhysicsUpdatable.hpp"
 #include "PlayModule.hpp"
 
 class B2PhysicsSystem;
@@ -15,13 +16,13 @@ class MainCamera;
 class InputController;
 class TestAiController;
 
-class ModuleContainer :public cocos2d::Node {
+class ModuleContainer :public cocos2d::Node, public PhysicsUpdatable {
 public:
     ADD_CHILD_MASK(cocos2d::Node)
 
     virtual void onEnter() override;;
-    static ModuleContainer * create(B2PhysicsSystem * system,MainCamera * cam);
-    bool init(B2PhysicsSystem * system,MainCamera * cam);
+    static ModuleContainer * create(MainCamera * cam);
+    bool init(MainCamera * cam);
 
     ~ModuleContainer();
 
@@ -35,8 +36,10 @@ public:
     PlayModule *getCurrentModule();
 
 
-    void prePhysicsUpdate(float delta);
-    void postPhysicsUpdate(float delta);
+
+
+    void prePhysicsUpdate(float delta)override;
+    void postPhysicsUpdate(float delta)override;
 
 
 private:
@@ -49,7 +52,6 @@ private:
 
 
     //weak references
-    B2PhysicsSystem * system = nullptr;
     MainCamera * cam = nullptr;
 
 

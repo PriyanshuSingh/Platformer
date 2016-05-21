@@ -40,18 +40,24 @@ void PhysicsActor::setBodiesActive(bool flag) {
 
 void PhysicsActor::deleteAllBodiesAndJoints() {
 
-    if(system->isSystemActive()){
-        //joints before bodies
-        for(auto &j :joints){
-            system->getWorld()->DestroyJoint(j);
-        }
-        for(auto &b :bodies){
-            system->getWorld()->DestroyBody(b);
-        }
-        joints.clear();
-        bodies.clear();
+    system->DestroyJoints(joints);
+    system->DestroyBodies(bodies);
+    //reduntant
+//    joints.clear();
+//    bodies.clear();
 
-    }
+//    if(system->isSystemActive()){
+//        //joints before bodies
+//        for(auto &j :joints){
+//            system->getWorld()->DestroyJoint(j);
+//        }
+//        for(auto &b :bodies){
+//            system->getWorld()->DestroyBody(b);
+//        }
+//        joints.clear();
+//        bodies.clear();
+//
+//    }
 
 
 }
@@ -72,31 +78,31 @@ void PhysicsActor::fillBodyAndJoints(const PhysicsActor::bVec &bodies, const Phy
 }
 
 
-bool PhysicsActor::init(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints,bool active) {
+bool PhysicsActor::init(const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints,bool active) {
 
 
     fillBodyAndJoints(bodies,joints);
-    return commonInit(system,type,initPosition,active);
+    return commonInit(type,initPosition,active);
 }
 
-bool PhysicsActor::init(B2PhysicsSystem *system, const PhysicsActor::ActorType &type, const b2Vec2 &initPosition,b2dJson &json,bool active) {
+bool PhysicsActor::init(const PhysicsActor::ActorType &type, const b2Vec2 &initPosition,b2dJson &json,bool active) {
     fillBodyAndJoints(json);
-    return commonInit(system,type,initPosition,active);
+    return commonInit(type,initPosition,active);
 }
 
 
-bool PhysicsActor::commonInit(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,bool active){
+bool PhysicsActor::commonInit(const ActorType & type,const b2Vec2 & initPosition,bool active){
 
 
     if(!Node::init()) {
         return false;
-
     }
 
 
+
     setTag(DontCareTag);
-    this->system = system;
     this->type = type;
+
 
     setupPhysicsObjects(initPosition,active);
     return true;
@@ -123,6 +129,7 @@ void PhysicsActor::onEnter() {
 
 
 PhysicsActor::~PhysicsActor() {
+
     deleteAllBodiesAndJoints();
 }
 
@@ -144,9 +151,9 @@ void PhysicsActor::setGravityScale(float scale) {
 }
 
 
-TestActor *TestActor::create(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
+TestActor *TestActor::create(const b2Vec2 & initPosition) {
     auto tActor = new(std::nothrow)TestActor();
-    if(tActor && tActor->init(system,initPosition)){
+    if(tActor && tActor->init(initPosition)){
         tActor->autorelease();
         return tActor;
     }
@@ -154,7 +161,7 @@ TestActor *TestActor::create(B2PhysicsSystem *system,const b2Vec2 & initPosition
     return nullptr;
 }
 
-bool TestActor::init(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
+bool TestActor::init(const b2Vec2 & initPosition) {
 
 
         b2BodyDef testBodyDef;
@@ -178,7 +185,7 @@ bool TestActor::init(B2PhysicsSystem *system,const b2Vec2 & initPosition) {
     bVec bods;
     bods.push_back(bod);
     jVec jos;
-    if(!PhysicsActor::init(system,ActorType::Interactive,initPosition,bods,jos)){
+    if(!PhysicsActor::init(ActorType::Interactive,initPosition,bods,jos)){
         return false;
     }
 
@@ -230,9 +237,9 @@ void TestActor::postPhysicsUpdate(float delta) {
 //Test Actor 2
 
 
-TestActor2 *TestActor2::create(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
+TestActor2 *TestActor2::create(const b2Vec2 &initPosition) {
     auto tActor2 = new(std::nothrow)TestActor2();
-    if(tActor2 && tActor2->init(system,initPosition)){
+    if(tActor2 && tActor2->init(initPosition)){
         tActor2->autorelease();
         return tActor2;
     }
@@ -240,10 +247,10 @@ TestActor2 *TestActor2::create(B2PhysicsSystem *system, const b2Vec2 &initPositi
     return nullptr;
 }
 
-bool TestActor2::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
+bool TestActor2::init(const b2Vec2 &initPosition) {
 
     auto json = system->addJsonObject("Platformer/RubeScenes/test.json");
-    if(!PhysicsActor::init(system,ActorType ::Interactive,initPosition,json)){
+    if(!PhysicsActor::init(ActorType ::Interactive,initPosition,json)){
         return false;
     }
 

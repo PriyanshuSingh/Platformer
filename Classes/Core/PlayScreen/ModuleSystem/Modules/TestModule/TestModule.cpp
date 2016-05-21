@@ -2,6 +2,7 @@
 // Created by ashish on 4/21/16.
 //
 
+#include <stdlib.h>
 #include "../../../PlatformerGlobals.hpp"
 #include "TestModule.hpp"
 #include "../../../Physics/b2PhysicsSystem.hpp"
@@ -11,9 +12,9 @@ USING_NS_CC;
 
 
 
-bool TestModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *system, MainCamera *cam,
+bool TestModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * system ,MainCamera *cam,
                       const b2Vec2 &offset) {
-    if(!PlayModule::init(info, system, cam, offset)){
+    if(!PlayModule::init(info,system,cam, offset)){
         return false;
     }
 
@@ -60,43 +61,38 @@ bool TestModule::init(const PlayModule::staticInfo &info, B2PhysicsSystem *syste
 void TestModule::onCoordsStable() {
     PlayModule::onCoordsStable();
 
-
-    newActor = TestActor::create(system,boxInitOffset+b2Vec2(2,10));
+    newActor = TestActor::create(boxInitOffset+b2Vec2(2,10));
     this->addChild(newActor);
 
 
-    actor2 = TestActor2::create(system,boxInitOffset+b2Vec2(13,12));
+    actor2 = TestActor2::create(boxInitOffset+b2Vec2(13,12));
     this->addChild(actor2);
 
 
 
-    blocker = Blocker::create(system,boxInitOffset);
+    blocker = Blocker::create(boxInitOffset);
     this->addChild(blocker);
 
 }
 
-void TestModule::prePhysicsUpdate(float delta) {
+void TestModule::preUpdate(float delta) {
 
-    PlayModule::prePhysicsUpdate(delta);
+    PlayModule::preUpdate(delta);
+
 
     newActor->setGravityScale(switcher);
     //TODO just for testing purposes
-//    actor2->setGravityScale(switcher);
+    actor2->setGravityScale(switcher);
     blocker->setGravityScale(switcher);
 
-    newActor->prePhysicsUpdate(delta);
-    actor2->prePhysicsUpdate(delta);
-    blocker->prePhysicsUpdate(delta);
 
 
 }
 
-void TestModule::postPhysicsUpdate(float delta) {
-    PlayModule::postPhysicsUpdate(delta);
+void TestModule::postUpdate(float delta) {
 
-    newActor->postPhysicsUpdate(delta);
-    actor2->postPhysicsUpdate(delta);
-    blocker->postPhysicsUpdate(delta);
+    PlayModule::postUpdate(delta);
+
 }
 
 
@@ -106,9 +102,6 @@ void TestModule::BeginContact(b2Contact *contact) {
     PhysicsActor* actor1 = static_cast<PhysicsActor*>(fixA->GetBody()->GetUserData());
     PhysicsActor* actor2 = static_cast<PhysicsActor*>(fixB->GetBody()->GetUserData());
 
-//    cocos2d::log("blocker is %p",static_cast<PhysicsActor*>(blocker));
-//    cocos2d::log("actor1 is %p",actor1);
-//    cocos2d::log("actor2 is %p",actor2);
 
 
     if((actor1!= nullptr)  && (actor1 == static_cast<PhysicsActor*>(blocker))){

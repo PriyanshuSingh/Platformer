@@ -12,16 +12,16 @@ void TestModule2::EndContact(b2Contact *contact) {
     PlayModule::EndContact(contact);
 }
 
-bool TestModule2::init(const PlayModule::staticInfo &info, B2PhysicsSystem *system, MainCamera *cam, const b2Vec2 &offset) {
-    return PlayModule::init(info, system, cam, offset);
+bool TestModule2::init(const PlayModule::staticInfo &info,B2PhysicsSystem * system,MainCamera *cam, const b2Vec2 &offset) {
+    return PlayModule::init(info,system, cam, offset);
 }
 
-void TestModule2::prePhysicsUpdate(float delta) {
-    PlayModule::prePhysicsUpdate(delta);
+void TestModule2::preUpdate(float delta) {
+    PlayModule::preUpdate(delta);
 }
 
-void TestModule2::postPhysicsUpdate(float delta) {
-    PlayModule::postPhysicsUpdate(delta);
+void TestModule2::postUpdate(float delta) {
+    PlayModule::postUpdate(delta);
 }
 
 void TestModule2::onCoordsStable() {

@@ -143,6 +143,7 @@ set(GAME_SRC
   Classes/Core/PlayScreen/Physics/b2PhysicsSystem.cpp
   Classes/Core/PlayScreen/Physics/PhysicsActor.cpp
   Classes/Core/PlayScreen/Physics/Impulser.cpp
+  Classes/Core/PlayScreen/Physics/PhysicsUpdatable.cpp
   Classes/Core/PlayScreen/PlayScreen.cpp
 
   #player
@@ -182,6 +183,7 @@ set(GAME_HEADERS
         Classes/Core/PlayScreen/Physics/b2PhysicsSystem.hpp
         Classes/Core/PlayScreen/Physics/PhysicsActor.hpp
         Classes/Core/PlayScreen/Physics/Impulser.hpp
+        Classes/Core/PlayScreen/Physics/PhysicsUpdatable.hpp
         Classes/Core/PlayScreen/PlayScreen.hpp
 
 
