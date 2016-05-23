@@ -11,9 +11,9 @@ class Blocker :public PhysicsActor{
 
 
 public:
-    static Blocker* create(B2PhysicsSystem * system,const b2Vec2 & initPosition);
+    static Blocker* create(const b2Vec2 & initPosition);
 
-    bool init(B2PhysicsSystem *system, const b2Vec2 &initPosition);
+    bool init(const b2Vec2 &initPosition);
 
     virtual void onEnter() override;
 

@@ -25,8 +25,8 @@ class Player: public PhysicsActor{
 
 public:
     //creation deletion methods
-    static Player * create(ModuleContainer * container,B2PhysicsSystem * system,const b2Vec2 & initPosition);
-    bool init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition);
+    static Player * create(ModuleContainer * container,const b2Vec2 & initPosition);
+    bool init(ModuleContainer * container,const b2Vec2 & initPosition);
     //TODO add reinit method for death control
     //bool reinit(){calls parent init with keep body acitve }
 

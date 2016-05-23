@@ -58,7 +58,7 @@ bool PlayScreen::init() {
 
 
     {
-        container = ModuleContainer::create(physicsSystem,cam);
+        container = ModuleContainer::create(cam);
         this->addChild(container);
     }
 
@@ -152,11 +152,8 @@ void PlayScreen::update(float delta){
 
 
     physicsSystem->setUpdated(false);
-    container->prePhysicsUpdate(delta);
     physicsSystem->update(delta);
     physicsSystem->setUpdated(true);
-    container->postPhysicsUpdate(delta);
-
 
 
 

@@ -6,9 +6,9 @@
 #include "../../../Physics/b2PhysicsSystem.hpp"
 
 
-Blocker *Blocker::create(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
+Blocker *Blocker::create(const b2Vec2 &initPosition) {
     auto bActor = new(std::nothrow)Blocker();
-    if(bActor && bActor->init(system,initPosition)){
+    if(bActor && bActor->init(initPosition)){
         bActor->autorelease();
         return bActor;
     }
@@ -16,11 +16,11 @@ Blocker *Blocker::create(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
     return nullptr;
 }
 
-bool Blocker::init(B2PhysicsSystem *system, const b2Vec2 &initPosition) {
+bool Blocker::init(const b2Vec2 &initPosition) {
 
     auto json = system->addJsonObject("Platformer/Modules/TestModule/Dynamic/Blocker.json");
 
-    if(!PhysicsActor::init(system,ActorType ::Interactive, initPosition,json)){
+    if(!PhysicsActor::init(ActorType ::Interactive, initPosition,json)){
         return false;
     }
 

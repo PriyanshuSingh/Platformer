@@ -9,12 +9,15 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "../PlatformerGlobals.hpp"
+#include "b2PhysicsSystem.hpp"
+#include "PhysicsUpdatable.hpp"
+
 
 class B2PhysicsSystem;
 class b2Body;
 class PlayModule;
 //a physics Driven Object
-class PhysicsActor:public cocos2d::Node {
+class PhysicsActor:public cocos2d::Node, public PhysicsUpdatable {
 public:
 
     /*Use tag to break ties between objects which have same Actor Type*/
@@ -32,6 +35,7 @@ public:
 
     typedef std::vector<b2Body*> bVec;
     typedef std::vector<b2Joint*> jVec;
+
 
 
 
@@ -57,8 +61,6 @@ public:
 
 
 
-    virtual void prePhysicsUpdate(float delta){}
-    virtual void postPhysicsUpdate(float delta){}
 
 
 
@@ -79,8 +81,8 @@ protected:
 
 
 
-    bool init(B2PhysicsSystem * system,const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints,bool active = false);
-    bool init(B2PhysicsSystem * system,const ActorType & type,const b2Vec2 & initPosition,b2dJson & json,bool active = false);
+    bool init(const ActorType & type,const b2Vec2 & initPosition,const bVec & bodies,const jVec & joints,bool active = false);
+    bool init(const ActorType & type,const b2Vec2 & initPosition,b2dJson & json,bool active = false);
 
     //by default sets user data of all the bodies and joints == this
     virtual void setUserData();
@@ -89,7 +91,6 @@ protected:
     //by default add offset to all bodies and joints passed are set Active/Inactive
     virtual void setBodiesActive(bool flag);
 
-    B2PhysicsSystem * system = nullptr;
     ActorType type = ActorType::Void;
 
 
@@ -98,7 +99,7 @@ protected:
     void fillBodyAndJoints(const bVec & bodies,const jVec & joints);
 
 private:
-    bool commonInit(B2PhysicsSystem *system,const ActorType & type,const b2Vec2 & initPosition,bool active);
+    bool commonInit(const ActorType & type,const b2Vec2 & initPosition,bool active);
     bVec bodies;
     jVec joints;
 
@@ -108,8 +109,8 @@ private:
 class TestActor:public PhysicsActor{
 public:
 
-    static TestActor * create(B2PhysicsSystem * system,const b2Vec2 & initPosition);
-    bool init(B2PhysicsSystem *system,const b2Vec2 & initPosition);
+    static TestActor * create(const b2Vec2 & initPosition);
+    bool init(const b2Vec2 & initPosition);
 
     void onEnter() override;
     virtual ~TestActor(){};
@@ -117,7 +118,8 @@ public:
     cocos2d::Vec2 getDeltaMovement() override;
 
 
-    virtual void postPhysicsUpdate(float delta) override;
+    void prePhysicsUpdate(float delta) override{};
+    void postPhysicsUpdate(float delta) override;
 
 private:
 
@@ -129,15 +131,16 @@ private:
 class TestActor2:public PhysicsActor{
 public:
 
-    static TestActor2 * create(B2PhysicsSystem * system,const b2Vec2 & initPosition);
-    bool init(B2PhysicsSystem *system,const b2Vec2 & initPosition);
+    static TestActor2 * create(const b2Vec2 & initPosition);
+    bool init(const b2Vec2 & initPosition);
 
     void onEnter() override;
     virtual ~TestActor2(){};
 
     cocos2d::Vec2 getDeltaMovement() override;
 
-    virtual void postPhysicsUpdate(float delta) override;
+    void prePhysicsUpdate(float delta) override{};
+    void postPhysicsUpdate(float delta) override;
 
 private:
 

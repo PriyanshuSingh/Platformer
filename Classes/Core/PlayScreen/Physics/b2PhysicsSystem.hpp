@@ -6,15 +6,19 @@
 #define B2PHYSICSSYSTEM_HPP
 
 
+#include <Core/PlayScreen/ModuleSystem/PlayModule.hpp>
 #include "../../../rubeStuff/b2dJson.h"
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 #include "../PlatformerGlobals.hpp"
 
 class Impulser;
+class PhysicsUpdatable;
+
 class B2PhysicsSystem {
 public:
     friend class Impulser;
+    friend class PhysicsUpdatable;
 
     b2dJson addJsonObject(const std::string & filename);
 
@@ -49,6 +53,10 @@ public:
     b2Vec2 screenToBox2D(const cocos2d::Vec2 & in);
     cocos2d::Vec2 box2DToScreen(const b2Vec2 & in);
 
+    void DestroyJoints(const std::vector<b2Joint * > & joints);
+    void DestroyBodies(const std::vector<b2Body * > & bodies);
+
+
 
     //get visible origin in bo2d world
     b2Vec2 getB2VisibleOrigin();
@@ -77,8 +85,8 @@ public:
     void setSimulationSpeed(float scaleFactor);
 
 
-
     //TODO
+    //
     //add other support methods here
     //support for interpolation
     //support for deleting entities after a step
@@ -88,6 +96,7 @@ public:
 
 
 //wrapper methods
+
 
 
 
@@ -136,11 +145,15 @@ private:
 
 
     std::vector<Impulser* >impulsers;
+    std::vector<PhysicsUpdatable * >updatables;
 
 
 
     void addImpulser(Impulser* i);
     void removeImpulser(Impulser* i);
+
+    void addPhysicsUpdatable(PhysicsUpdatable *pUpdatable);
+    void removePhysicsUpdatable(PhysicsUpdatable *pUpdatable);
 
 
 

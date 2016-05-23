@@ -17,9 +17,9 @@ public:
     virtual void EndContact(b2Contact *contact) override;
 
 
-    virtual bool init(const staticInfo &info, B2PhysicsSystem *system, MainCamera *cam, const b2Vec2 &offset) override;
-    virtual void prePhysicsUpdate(float delta) override;
-    virtual void postPhysicsUpdate(float delta) override;
+    virtual bool init(const staticInfo &info,B2PhysicsSystem * system,MainCamera *cam, const b2Vec2 &offset) override;
+    virtual void preUpdate(float delta)override;
+    virtual void postUpdate(float delta)override;
 
 protected:
     virtual void onCoordsStable() override;

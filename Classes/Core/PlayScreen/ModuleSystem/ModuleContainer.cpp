@@ -12,10 +12,10 @@
 USING_NS_CC;
 
 
-ModuleContainer * ModuleContainer::create(B2PhysicsSystem *system,MainCamera * cam) {
+ModuleContainer * ModuleContainer::create(MainCamera * cam) {
 
     auto module = new (std::nothrow) ModuleContainer();
-    if (module && module->init(system,cam))
+    if (module && module->init(cam))
     {
         module->autorelease();
         return module;
@@ -23,7 +23,7 @@ ModuleContainer * ModuleContainer::create(B2PhysicsSystem *system,MainCamera * c
     CC_SAFE_DELETE(module);
     return nullptr;
 }
-bool ModuleContainer::init(B2PhysicsSystem *system,MainCamera * cam) {
+bool ModuleContainer::init(MainCamera * cam) {
     if(!Node::init()){
         return false;
     }
@@ -38,9 +38,8 @@ bool ModuleContainer::init(B2PhysicsSystem *system,MainCamera * cam) {
 
         schedule(schedule_selector(ModuleContainer::checkIsCurrentSafelyDone),checkInterval);
 
-        this->system = system;
         this->cam = cam;
-        this->mainPlayer = Player::create(this,system,b2Vec2(3,10));
+        this->mainPlayer = Player::create(this,b2Vec2(3,10));
         this->mainPlayer->retain();
     }
 
@@ -69,20 +68,19 @@ bool ModuleContainer::init(B2PhysicsSystem *system,MainCamera * cam) {
         this->addChild(gameController,10);
         this->addChild(controller2,10);
 
-
-
-
-
     }
 
 
-
-
-
-
-
-
     return true;
+}
+
+
+void ModuleContainer::onEnter() {
+    CCASSERT(current!= nullptr,"Current is null in onEnter");
+    Node::onEnter();
+    current->setCoordinatesStabilized(true);
+
+
 }
 
 
@@ -163,6 +161,8 @@ void ModuleContainer::switchCurrentModule() {
         system->getWorld()->ShiftOrigin(getOffset);
 
 
+
+
         //Box2D world callbacks
         //like b2ContactListener,b2ContactFilter,b2DestructionListener
         system->getWorld()->SetContactListener(current);
@@ -170,7 +170,8 @@ void ModuleContainer::switchCurrentModule() {
 
 
         //move camera back
-        cam->setPositionX(current->convertToNodeSpace(cam->getPosition()).x);
+        cam->setPosition(current->convertToNodeSpace(cam->getPosition()));
+
 
 
         //move yourself back
@@ -224,10 +225,13 @@ void ModuleContainer::loadCurrentModule() {
 
     current = ModuleEntries::getNextModule(currentLevel,system,cam,b2Vec2(0.0f,0.0f));
     current->setPosition(Vec2::ZERO);
-    current->setCoordinatesStabilized(true);
+    //set coordinates stabilized is called in OnEnter()to
+    //maintain onEnter called before OnCoordsStable()
+
     //add player
     current->addPlayer(mainPlayer);
 
+//    system->setFirstPhysicsUpdatable(current);
     //register contact listeners
     system->getWorld()->SetContactListener(current);
     system->getWorld()->SetDestructionListener(current);
@@ -301,8 +305,8 @@ void ModuleContainer::prePhysicsUpdate(float delta) {
     //TODO move these to the current prePhysicsUpdate for
     //more fine grained control
     gameController->prePhysicsUpdate(delta);
-    mainPlayer->prePhysicsUpdate(delta);
-    current->prePhysicsUpdate(delta);
+//    mainPlayer->prePhysicsUpdate(delta);
+//    current->prePhysicsUpdate(delta);
 
 
 }
@@ -313,8 +317,8 @@ void ModuleContainer::postPhysicsUpdate(float delta){
 
 
     gameController->postPhysicsUpdate(delta);
-    mainPlayer->postPhysicsUpdate(delta);
-    current->postPhysicsUpdate(delta);
+//    mainPlayer->postPhysicsUpdate(delta);
+//    current->postPhysicsUpdate(delta);
 
 
 

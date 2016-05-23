@@ -12,12 +12,12 @@
 #include "PlayerCommand.hpp"
 
 USING_NS_CC;
-Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition) {
+Player *Player::create(ModuleContainer * container,const b2Vec2 & initPosition) {
 
 
 
     auto player = new (std::nothrow) Player();
-    if (player && player->init(container,system,initPosition))
+    if (player && player->init(container,initPosition))
     {
         player->autorelease();
     }
@@ -29,10 +29,11 @@ Player *Player::create(ModuleContainer * container,B2PhysicsSystem *system,const
 
 }
 
-bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Vec2 & initPosition) {
-    auto json = system->addJsonObject("Player2.json");
-//    auto json = system->addJsonObject("Platformer/Player/player.json");
-    if(!PhysicsActor::init(system,ActorType::Player,initPosition,json)){
+bool Player::init(ModuleContainer * container,const b2Vec2 & initPosition) {
+    auto json = system->addJsonObject("Platformer/Player/player.json");
+
+
+    if(!PhysicsActor::init(ActorType::Player,initPosition,json)){
         return false;
     }
     setTag(PhysicsActor::MainPlayerTag);
@@ -40,7 +41,6 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
     //properties
     {
         this->container = container;
-
         setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     }
 
@@ -58,7 +58,7 @@ bool Player::init(ModuleContainer * container,B2PhysicsSystem *system,const b2Ve
         groundFixture = json.getFixtureByName("FootFixture");
 
     }
-    setupPlayerSprite(&json);
+//    setupPlayerSprite(&json);
 
     return true;
 }

@@ -17,9 +17,9 @@ public:
 
     virtual ~RenderModule();
 
-    bool init(const staticInfo &info, B2PhysicsSystem *system, MainCamera *cam, const b2Vec2 &offset) override;
-    void prePhysicsUpdate(float delta) override;
-    void postPhysicsUpdate(float delta) override;
+    bool init(const staticInfo &info,B2PhysicsSystem * system,MainCamera *cam, const b2Vec2 &offset) override;
+    void preUpdate(float delta) override;
+    void postUpdate(float delta) override;
 
 /*
     void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &parentTransform,
