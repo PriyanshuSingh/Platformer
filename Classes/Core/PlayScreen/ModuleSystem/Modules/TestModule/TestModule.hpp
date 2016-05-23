@@ -22,17 +22,16 @@ public:
     virtual void postUpdate(float delta)override;
 
 protected:
-    virtual void onCoordsStable() override;
 
 
 
 
 private:
 
+    virtual void onCoordsStable() override;
     PhysicsActor *newActor = nullptr;
     PhysicsActor * actor2 = nullptr;
     Blocker * blocker = nullptr;
-
     float switcher = 1;
 };
 

@@ -42,22 +42,9 @@ void PhysicsActor::deleteAllBodiesAndJoints() {
 
     system->DestroyJoints(joints);
     system->DestroyBodies(bodies);
-    //reduntant
-//    joints.clear();
-//    bodies.clear();
+    joints.clear();
+    bodies.clear();
 
-//    if(system->isSystemActive()){
-//        //joints before bodies
-//        for(auto &j :joints){
-//            system->getWorld()->DestroyJoint(j);
-//        }
-//        for(auto &b :bodies){
-//            system->getWorld()->DestroyBody(b);
-//        }
-//        joints.clear();
-//        bodies.clear();
-//
-//    }
 
 
 }
@@ -122,8 +109,7 @@ void PhysicsActor::setupPhysicsObjects(const b2Vec2 & pos,bool active) {
 void PhysicsActor::onEnter() {
     Node::onEnter();
     //TODO activating bodies is expensive,
-    //TODO keep bodies active and pre physics update will be called
-    //only when module active
+    //TODO keep bodies active and pre physics update will be called only when module active
     setBodiesActive(true);
 }
 

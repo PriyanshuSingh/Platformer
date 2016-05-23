@@ -70,7 +70,6 @@ public:
         std::string cocosInfo;
     };
 
-    CREATE_MODULE(PlayModule);
     ADD_CHILD_MASK(cocos2d::Layer);
 
 
@@ -86,10 +85,7 @@ public:
 #endif
 
 protected:
-    //THIS IS YOUR ACTIVE constructor
-    //before this your pre/post physics update are not called,
-    //you don't get world callbacks,player is null etc.
-    virtual void onCoordsStable();
+
 
 
 public:
@@ -211,6 +207,12 @@ protected:
     b2Vec2 boxInitOffset;
 
 private:
+    //USING NVI idiom
+    void stabilized();
+    //THIS IS YOUR ACTIVE constructor
+    //before this your pre/post physics update are not called,
+    //you don't get world callbacks,player is null etc.
+    virtual void onCoordsStable()=0;
     void loadImagesFromRube(b2dJson *json);
     void setImagePositionsFromPhysicsBodies();
 

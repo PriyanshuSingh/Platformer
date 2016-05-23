@@ -25,5 +25,5 @@ void TestModule2::postUpdate(float delta) {
 }
 
 void TestModule2::onCoordsStable() {
-    PlayModule::onCoordsStable();
+
 }

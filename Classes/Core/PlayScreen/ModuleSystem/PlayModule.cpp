@@ -92,12 +92,17 @@ bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamer
 
     return true;
 }
-void PlayModule::onCoordsStable() {
+
+
+void PlayModule::stabilized() {
+
+
     cocos2d::log("on coords stable Play module");
     //zero out offset
     boxInitOffset = b2Vec2();
     boxInitOffset.SetZero();
     updater = new ModuleUpdater(this);
+    onCoordsStable();
 }
 
 PlayModule::~PlayModule() {
@@ -107,13 +112,9 @@ PlayModule::~PlayModule() {
 
     CC_SAFE_DELETE(updater);
 
-    if(B2PhysicsSystem::isSystemActive()) {
+    system->DestroyBodies(bodies);
+    bodies.clear();
 
-        for (auto &b:bodies) {
-            system->getWorld()->DestroyBody(b);
-
-        }
-    }
     cocos2d::log("called play module destructor callback");
 
     //Deleting info
@@ -180,7 +181,7 @@ void PlayModule::setCoordinatesStabilized(bool stable) {
     if(stable == coordsStable)
         return;
     coordsStable = stable;
-    if(coordsStable)onCoordsStable();
+    if(coordsStable)stabilized();
 
 }
 
@@ -217,7 +218,7 @@ void PlayModule::loadImagesFromRube(b2dJson *json) {
     std::vector<b2dJsonImage*> b2dImages;
     json->getAllImages(b2dImages);
     // loop through the vector, create Sprites for each image and store them in m_imageInfos
-    for (int i = 0; i < b2dImages.size(); i++) {
+    for (size_t i = 0; i < b2dImages.size(); i++) {
         b2dJsonImage *img = b2dImages[i];
 
         CCLOG("Loading image: %s", img->file.c_str());

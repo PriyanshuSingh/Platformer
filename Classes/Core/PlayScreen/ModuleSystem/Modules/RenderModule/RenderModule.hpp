@@ -26,13 +26,12 @@ public:
                        uint32_t parentFlags) override;
 */
 protected:
-    void onCoordsStable() override;
 
 
 
 
 private:
-
+    void onCoordsStable() override;
     cocos2d::RenderTexture * canvas = nullptr;
     cocos2d::Sprite * renderSprite = nullptr;
 

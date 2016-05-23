@@ -59,16 +59,12 @@ bool TestModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * syste
 }
 
 void TestModule::onCoordsStable() {
-    PlayModule::onCoordsStable();
 
     newActor = TestActor::create(boxInitOffset+b2Vec2(2,10));
     this->addChild(newActor);
 
-
     actor2 = TestActor2::create(boxInitOffset+b2Vec2(13,12));
     this->addChild(actor2);
-
-
 
     blocker = Blocker::create(boxInitOffset);
     this->addChild(blocker);

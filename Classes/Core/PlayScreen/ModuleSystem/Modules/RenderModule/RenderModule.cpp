@@ -131,7 +131,6 @@ void RenderModule::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &paren
 }
 */
 void RenderModule::onCoordsStable() {
-    PlayModule::onCoordsStable();
     auto size = Director::getInstance()->getWinSize();
     lt = DynamicLight::create(system, system->screenToBox2D(Vec2(size.width*0.8f , size.height * 0.8f)));
     if(lt == nullptr)CCLOG("FUCK");
