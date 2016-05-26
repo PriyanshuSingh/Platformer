@@ -57,7 +57,6 @@ private:
     cocos2d::Vec3 prevPos;
 
 
-    cocos2d::Sprite * backGround = nullptr;
 };
 
 

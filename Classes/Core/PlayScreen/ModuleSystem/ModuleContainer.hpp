@@ -18,9 +18,9 @@ class TestAiController;
 
 class ModuleContainer :public cocos2d::Node, public PhysicsUpdatable {
 public:
-    ADD_CHILD_MASK(cocos2d::Node)
+    ADD_CHILD_MASK(cocos2d::Node);
 
-    virtual void onEnter() override;;
+    virtual void onEnter() override;
     static ModuleContainer * create(MainCamera * cam);
     bool init(MainCamera * cam);
 

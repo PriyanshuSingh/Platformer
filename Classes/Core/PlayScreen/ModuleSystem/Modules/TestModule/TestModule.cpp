@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include "../../ParaNode.hpp"
 #include "../../../PlatformerGlobals.hpp"
 #include "TestModule.hpp"
 #include "../../../Physics/b2PhysicsSystem.hpp"
@@ -19,6 +20,33 @@ bool TestModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * syste
     }
 
     auto keyListener = EventListenerKeyboard::create();
+
+
+    cocos2d::log("content size width by 2 is %f",getContentSize().width/2);
+
+    auto spTest = Sprite::create("HelloWorld.png");
+    spTest->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+    spTest->setPosition(Vec2(0,_director->getWinSize().height));
+    addChild(spTest,10);
+
+
+
+
+
+    Size x;
+    x.width = 2048/3.0f;
+    std::string filename = "back_scaled.jpg";
+    if(getContentSize().width == 2048){
+        filename = "nathan.jpg";
+        x.width = getContentSize().width/2;
+    }
+    nodeBack = ParaNode::create(cam,Size(x.width,getContentSize().height),ParaNode::Dir::X);
+    addChild(nodeBack);
+
+    auto sp = Sprite::create(filename);
+    sp->setAnchorPoint(Vec2::ZERO);
+    nodeBack->addChild(sp);
+
 
     keyListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event){
 
@@ -52,8 +80,6 @@ bool TestModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * syste
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyListener,this);
 
     return true;
-
-
 
 
 }

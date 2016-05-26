@@ -40,7 +40,7 @@ public:
 
 
 
-    /*By defualt activates all the bodies
+    /*By default activates all the bodies
      * override this method to use setup initial position of cocos2d-x objects
      * based on Box2d objects as this is called
      * when added to the "Stage"*/

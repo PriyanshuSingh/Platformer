@@ -8,10 +8,11 @@
 #include "../../PlayModule.hpp"
 #include "../../../Physics/PhysicsActor.hpp"
 #include "Blocker.hpp"
+class ParaNode;
 
 class TestModule:public PlayModule {
 public:
-    CREATE_MODULE(TestModule)
+    CREATE_MODULE(TestModule);
 
     virtual void BeginContact(b2Contact *contact) override;
     virtual void EndContact(b2Contact *contact) override;
@@ -32,6 +33,7 @@ private:
     PhysicsActor *newActor = nullptr;
     PhysicsActor * actor2 = nullptr;
     Blocker * blocker = nullptr;
+    ParaNode * nodeBack = nullptr;
     float switcher = 1;
 };
 

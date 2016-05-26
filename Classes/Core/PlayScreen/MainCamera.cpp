@@ -31,12 +31,6 @@ bool MainCamera::init() {
 
     defaultPos = getPosition3D();
 
-    backGround = Sprite::create("background.jpg");
-    backGround->setOpacity(64);
-    this->addChild(backGround);
-    auto winSize = Director::getInstance()->getWinSize();
-    backGround->setAnchorPoint(Vec2(0,0));
-    backGround->setPosition3D(Vec3(-winSize.width/2,-winSize.height/2,-getPositionZ()));
 
     return true;
 }
@@ -78,9 +72,6 @@ void MainCamera::move2D(float delta,const cocos2d::Vec2 &displacement) {
     //TODO use EASING STUFF to make it great :)
     auto action = MoveBy::create(delta,displacement);
     this->runAction(action);
-
-    auto action2 = MoveBy::create(delta,-1*displacement*(1-0.4));
-    backGround->runAction(action2);
 
 
 

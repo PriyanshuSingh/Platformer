@@ -70,6 +70,23 @@ public:
         std::string cocosInfo;
     };
 
+
+     /*Implement if you want to
+     * do something when Module Stable
+     */
+    class StableListener{
+    public:
+        virtual void onStable()=0;
+        virtual ~StableListener(){}
+    };
+    class ScreenListener{
+    public:
+        virtual void onVisible()=0;
+        virtual ~ScreenListener(){}
+    };
+
+
+
     ADD_CHILD_MASK(cocos2d::Layer);
 
 
@@ -130,6 +147,12 @@ public:
     const b2Vec2 & getInitOFfset(){return boxInitOffset;}
     bool getIsStable()const;
 
+
+//add stability listeners
+    void addStableListener(StableListener * listener);
+//add on screen enter listeners
+    void addOnScreenListener(ScreenListener * listener);
+
 protected:
 
 
@@ -149,28 +172,8 @@ protected:
 //TODO adjust the value of this guy in last module Accordingly
 //so that the module ends before hitting the corner of game :) and you can play
 //final animation and stuff
-
     float adjustOffset;
 protected:
-
-    class ModuleUpdater:public PhysicsUpdatable{
-        public:
-            ModuleUpdater(PlayModule * parentModule):parentModule(parentModule) {
-                //TODO add assertion here
-            }
-            void prePhysicsUpdate(float delta) override {
-                parentModule->preUpdate(delta);
-            }
-            void postPhysicsUpdate(float delta) override {
-                parentModule->postUpdate(delta);
-            }
-
-        B2PhysicsSystem *getSystem();
-
-    private:
-            PlayModule * parentModule = nullptr;
-    };
-    ModuleUpdater * updater = nullptr;
     enum DRAWORDER{
         BACKGROUND = 0,
         //the real World bojects
@@ -183,30 +186,15 @@ protected:
     };
 
     void initBodies(const b2Vec2 &offset);
-
-
-
-    //TODO see where to keep them
-    //probably better to have them in a seperate Node in the PlayScene
-    //add foreground and background objects to these guys
-    cocos2d::ParallaxNode * backGroundObject;
-    cocos2d::ParallaxNode * foreGroundObject;
-
-
-
     bool coordsStable = false;
-
-
-
-
-
-
-
-//parent methods made private here
-    using cocos2d::Layer::setAnchorPoint;
     b2Vec2 boxInitOffset;
-
 private:
+
+    std::vector<StableListener *> stableListeners;
+    std::vector<ScreenListener *> screenListeners;
+
+
+
     //USING NVI idiom
     void stabilized();
     //THIS IS YOUR ACTIVE constructor
@@ -215,9 +203,26 @@ private:
     virtual void onCoordsStable()=0;
     void loadImagesFromRube(b2dJson *json);
     void setImagePositionsFromPhysicsBodies();
+private:
+
+    //definitions
+    class ModuleUpdater:public PhysicsUpdatable{
+    public:
+        ModuleUpdater(PlayModule * parentModule):parentModule(parentModule) {}
+        void prePhysicsUpdate(float delta) override;
+        void postPhysicsUpdate(float delta) override;
+    private:
+        PlayModule * parentModule = nullptr;
+    };
+    ModuleUpdater * updater = nullptr;
+
+
+
+//parent methods made private here
+    using cocos2d::Layer::setAnchorPoint;
+
 
 };
-
 
 
 

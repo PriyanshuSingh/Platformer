@@ -75,10 +75,6 @@ bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamer
 
     //non-physics stuff
     {
-        foreGroundObject = ParallaxNode::create();
-        backGroundObject = ParallaxNode::create();
-        addChild(foreGroundObject, DRAWORDER::FOREGROUND);
-        addChild(backGroundObject, DRAWORDER::BACKGROUND);
     }
 
 
@@ -103,6 +99,11 @@ void PlayModule::stabilized() {
     boxInitOffset.SetZero();
     updater = new ModuleUpdater(this);
     onCoordsStable();
+    for(auto & listener:stableListeners){
+        listener->onStable();
+    }
+    stableListeners.clear();
+
 }
 
 PlayModule::~PlayModule() {
@@ -111,7 +112,6 @@ PlayModule::~PlayModule() {
     //TODO delete only bodies because these are pure statics
 
     CC_SAFE_DELETE(updater);
-
     system->DestroyBodies(bodies);
     bodies.clear();
 
@@ -137,6 +137,22 @@ void PlayModule::initBodies(const b2Vec2 &offset) {
         bodies.at(i)->SetUserData(nullptr);
     }
 
+
+
+}
+
+void PlayModule::addStableListener(PlayModule::StableListener *listener) {
+
+    CCASSERT(!coordsStable,"Adding listener when coords already stable");
+    CCASSERT(std::find(stableListeners.begin(),stableListeners.end(),listener)== stableListeners.end(),"Adding already added listener");
+    stableListeners.push_back(listener);
+
+}
+
+void PlayModule::addOnScreenListener(PlayModule::ScreenListener *listener) {
+    CCASSERT(!coordsStable,"Adding listener when coords already stable");
+    CCASSERT(std::find(screenListeners.begin(),screenListeners.end(),listener)== screenListeners.end(),"Adding already added listener");
+    screenListeners.push_back(listener);
 
 
 }
@@ -279,7 +295,12 @@ void PlayModule::setImagePositionsFromPhysicsBodies() {
     }
 }
 
-B2PhysicsSystem * PlayModule::ModuleUpdater::getSystem() {
-    return system;
+
+
+void PlayModule::ModuleUpdater::prePhysicsUpdate(float delta){
+    parentModule->preUpdate(delta);
 }
 
+void PlayModule::ModuleUpdater::postPhysicsUpdate(float delta){
+    parentModule->postUpdate(delta);
+}
