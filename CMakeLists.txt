@@ -164,6 +164,7 @@ set(GAME_SRC
         Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule2/TestModule2.cpp
 
 
+  Classes/Core/PlayScreen/ModuleSystem/ParaNode.cpp
   ${PLATFORM_SPECIFIC_SRC}
 )
 
@@ -203,6 +204,8 @@ set(GAME_HEADERS
         #modules
           Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/TestModule.hpp
           Classes/Core/PlayScreen/ModuleSystem/Modules/TestModule/Blocker.hpp
+
+        Classes/Core/PlayScreen/ModuleSystem/ParaNode.hpp
   ${PLATFORM_SPECIFIC_HEADERS}
 )
 

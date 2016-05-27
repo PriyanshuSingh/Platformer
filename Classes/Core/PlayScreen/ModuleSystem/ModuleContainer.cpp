@@ -125,9 +125,9 @@ void ModuleContainer::move(float xDisplacement,float zoomFactor) {
 //public interface
 void ModuleContainer::onEnterLastModule() {
 
-
-
+#ifdef DEBUGGING_APP
     cocos2d::log("entered last module");
+#endif
 }
 void ModuleContainer::addSwitchCurrentCallback(const std::function<void()> &callback) {
 
@@ -145,9 +145,9 @@ void ModuleContainer::switchCurrentModule() {
 
 
 
-
+#ifdef DEBUGGING_APP
         cocos2d::log("loading next module and swapping");
-
+#endif
 
         PlayModule* prev = current;
         current = next;
@@ -186,8 +186,9 @@ void ModuleContainer::switchCurrentModule() {
         //delete prev guy
         removeChild(prev);
         loadNextModule();
+#ifdef DEBUGGING_APP
         cocos2d::log("removed prev");
-
+#endif
         if(next == nullptr){
 
             onEnterLastModule();
@@ -198,7 +199,9 @@ void ModuleContainer::switchCurrentModule() {
 
     }
     else{
+#ifdef DEBUGGING_APP
         cocos2d::log("can't enter danger");
+#endif
         //unschedule the checker
         unschedule(schedule_selector(ModuleContainer::checkIsCurrentSafelyDone));
 

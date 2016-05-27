@@ -27,14 +27,11 @@ void ModuleEntries::initVector() {
 //    entries.push_back(ModuleHolder(i2,TestModule2::create));
 
 
-    entries.push_back(ModuleHolder(i1,TestModule::create));
     entries.push_back(ModuleHolder(i2,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
-    entries.push_back(ModuleHolder(i1,TestModule::create));
+    entries.push_back(ModuleHolder(i2,TestModule::create));
+    entries.push_back(ModuleHolder(i2,TestModule::create));
+    entries.push_back(ModuleHolder(i2,TestModule::create));
+    entries.push_back(ModuleHolder(i2,TestModule::create));
 
 
 }

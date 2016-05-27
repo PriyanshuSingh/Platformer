@@ -21,8 +21,9 @@ bool TestModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * syste
 
     auto keyListener = EventListenerKeyboard::create();
 
-
+#ifdef DEBUGGING_APP
     cocos2d::log("content size width by 2 is %f",getContentSize().width/2);
+#endif
 
     auto spTest = Sprite::create("HelloWorld.png");
     spTest->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
@@ -34,13 +35,10 @@ bool TestModule::init(const PlayModule::staticInfo &info,B2PhysicsSystem * syste
 
 
     Size x;
-    x.width = 2048/3.0f;
-    std::string filename = "back_scaled.jpg";
-    if(getContentSize().width == 2048){
-        filename = "nathan.jpg";
-        x.width = getContentSize().width/2;
-    }
-    nodeBack = ParaNode::create(cam,Size(x.width,getContentSize().height),ParaNode::Dir::X);
+    std::string filename = "nathan.jpg";
+    x.width = getContentSize().width/2;
+
+    nodeBack = ParaNode::create(cam,Size(x.width,getContentSize().height),Vec2(x.width*0.5f,0.0f),Vec2(getContentSize().width,0),ParaNode::Dir::X);
     addChild(nodeBack);
 
     auto sp = Sprite::create(filename);

@@ -69,7 +69,8 @@ void MainCamera::move2D(float delta,const cocos2d::Vec2 &displacement) {
 
 
 
-    //TODO use EASING STUFF to make it great :)
+
+//    TODO use EASING STUFF to make it great :)
     auto action = MoveBy::create(delta,displacement);
     this->runAction(action);
 

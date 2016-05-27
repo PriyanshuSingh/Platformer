@@ -92,8 +92,9 @@ bool PlayModule::init(const staticInfo & info,B2PhysicsSystem * system,MainCamer
 
 void PlayModule::stabilized() {
 
-
+#ifdef DEBUGGING_APP
     cocos2d::log("on coords stable Play module");
+#endif
     //zero out offset
     boxInitOffset = b2Vec2();
     boxInitOffset.SetZero();
@@ -114,9 +115,9 @@ PlayModule::~PlayModule() {
     CC_SAFE_DELETE(updater);
     system->DestroyBodies(bodies);
     bodies.clear();
-
+#ifdef DEBUGGING_APP
     cocos2d::log("called play module destructor callback");
-
+#endif
     //Deleting info
     for (auto info: m_imageInfos){
         delete info;
